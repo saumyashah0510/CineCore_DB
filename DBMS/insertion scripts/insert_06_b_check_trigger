@@ -1,0 +1,64 @@
+-- =================================================================
+-- INSERT SCRIPT 6b: Force a real budget overrun to test Trigger 1
+-- Run this AFTER insert_06
+-- =================================================================
+SET search_path = cinecore;
+
+-- -----------------------------------------------------------------
+-- CONTEXT:
+-- Project 2  Post Production head (Budget_Head_Id = 10)
+--   Allocated:     50,000,000  (50L)
+--   Already spent: 35,000,000  (VFX pre-vis, already APPROVED)
+--   Remaining:     15,000,000
+--
+-- We'll add a second VFX bill of 20,000,000 which pushes total to
+--   35M + 20M = 55M > 50M -> OVERRUN ✓
+-- -----------------------------------------------------------------
+
+DO $$
+DECLARE v_id INTEGER;
+BEGIN
+    CALL cinecore.sp_record_expense(
+        2,                          -- project_id
+        10,                         -- budget_head_id: Post Production
+        4,                          -- vendor: VisionVFX India
+        'VFX — second schedule renders, compositing and motion capture cleanup',
+        20000000.00,                -- 2cr — pushes total to 55M vs 50M allocated
+        '2025-02-01',
+        'NEFT',
+        'INV-VX-2025-100',
+        v_id
+    );
+    RAISE NOTICE 'Overrun expense created, ID: %', v_id;
+END $$;
+
+-- Approve it — THIS is what fires the trigger
+-- Watch for the WARNING in the psql output:
+-- "BUDGET ALERT: Budget Head 10 is now overspent (Spent: 55000000, Allocated: 50000000)"
+UPDATE cinecore.Expense
+SET Status = 'APPROVED', Approved_By = 1
+WHERE Invoice_No = 'INV-VX-2025-100';
+
+-- =================================================================
+-- VERIFY: Check the flag flipped
+-- =================================================================
+SELECT
+    bh.Budget_Head_Id,
+    p.Title,
+    bh.Category_Name,
+    bh.Allocated_Amount,
+    COALESCE(SUM(e.Amount), 0)  AS total_spent,
+    bh.Overspent_Flag
+FROM cinecore.Budget_Head bh
+JOIN cinecore.Project p      ON p.Project_id     = bh.Project_id
+LEFT JOIN cinecore.Expense e ON e.Budget_Head_Id = bh.Budget_Head_Id
+     AND e.Status IN ('APPROVED', 'PAID')
+GROUP BY bh.Budget_Head_Id, p.Title, bh.Category_Name,
+         bh.Allocated_Amount, bh.Overspent_Flag
+HAVING bh.Overspent_Flag = TRUE
+    OR COALESCE(SUM(e.Amount), 0) > bh.Allocated_Amount
+ORDER BY bh.Overspent_Flag DESC;
+
+-- Expected output:
+-- Budget_Head_Id | Title     | Category_Name  | Allocated  | total_spent | Overspent_Flag
+-- 10             | Neon City | Post Production | 50000000   | 55000000    | TRUE
