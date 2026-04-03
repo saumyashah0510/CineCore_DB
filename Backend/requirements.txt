@@ -1,0 +1,20 @@
+# Web framework + server
+fastapi==0.115.5
+uvicorn[standard]==0.32.1        # [standard] includes websocket + faster event loop
+
+# Database — async PostgreSQL
+sqlalchemy[asyncio]==2.0.36      # ORM, async support
+asyncpg==0.30.0                  # Async PostgreSQL driver (faster than psycopg2)
+
+# Redis caching
+redis==5.2.0                     # redis-py with async support built in
+
+# Settings / environment
+pydantic-settings==2.6.1         # Reads .env file into a config class
+python-dotenv==1.0.1
+
+# Data validation (comes with FastAPI but pin the version)
+pydantic==2.10.2
+
+# CORS, JSON
+python-multipart==0.0.17         # For form data in requests
