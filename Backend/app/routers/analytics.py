@@ -191,8 +191,7 @@ async def get_shoot_calendar(db: AsyncSession = Depends(get_db)):
         FROM cinecore.shoot_schedule ss
         JOIN cinecore.project p  ON p.project_id   = ss.project_id
         JOIN cinecore.location l ON l.location_id  = ss.location_id
-        WHERE ss.schedule_date >= CURRENT_DATE
-          AND ss.status NOT IN ('CANCELLED')
+        WHERE ss.status NOT IN ('CANCELLED','COMPLETED')
         ORDER BY ss.schedule_date, ss.call_time
     """))
     return [dict(r) for r in result.mappings().all()]
