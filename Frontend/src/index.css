@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Cormorant+SC:wght@500;600&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=JetBrains+Mono:wght@400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    /* Uses our new variables from tailwind.config.js */
+    @apply bg-cine-void text-cine-ivory font-body antialiased overflow-x-hidden;
+  }
+  
+  /* Elegant Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-cine-void; 
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-cine-border rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-cine-gold; 
+  }
+
+  /* Global text selection color */
+  ::selection {
+    @apply bg-cine-gold/30 text-cine-ivory;
+  }
+}

@@ -15,6 +15,8 @@ class SongCreate(BaseModel):
 
 class SongResponse(SongCreate):
     song_id: int
+    music_director_name: str | None = None
+    lyricist_name: str | None = None
     model_config = ConfigDict(from_attributes=True)
 
 

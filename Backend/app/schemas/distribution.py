@@ -42,6 +42,7 @@ class OTTDealUpdate(BaseModel):
 
 class OTTDealResponse(OTTDealCreate):
     deal_id: int
+    platform_name: str | None = None
     model_config = ConfigDict(from_attributes=True)
 
 
