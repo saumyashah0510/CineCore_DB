@@ -3,12 +3,30 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { User, Menu, LogOut } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
-// Define the exact navigation links for each specific role
+// STRICT MAPPING BASED ON SCENARIOS DOC
 const NAV_LINKS = {
-  ADMIN: ['Dashboard', 'All Projects', 'Distribution', 'Audit Logs'],
-  FINANCE_MANAGER: ['Dashboard', 'Ledger', 'Contracts', 'Vendors'],
-  PRODUCTION_MANAGER: ['Dashboard', 'Schedules', 'Locations', 'Permits'],
-  DIRECTOR: ['Dashboard', 'Scripts', 'Talent', 'Music'],
+  ADMIN: [
+    { label: 'Dashboard', path: '/dashboard' },
+    { label: 'All Projects', path: '/all-projects' }
+  ],
+  TALENT_MANAGER: [
+    { label: 'Talent Registry', path: '/talent' },
+    { label: 'Contracts', path: '/contracts' },
+    { label: 'Scripts', path: '/scripts' }
+  ],
+  FINANCE_MANAGER: [
+    { label: 'Expense Ledger', path: '/ledger' },
+    { label: 'Milestone Payments', path: '/payments' }
+  ],
+  PRODUCTION_MANAGER: [
+    { label: 'Locations', path: '/locations' },
+    { label: 'Schedules', path: '/schedules' },
+    { label: 'Permits', path: '/permits' }
+  ],
+  DISTRIBUTION_MANAGER: [
+    { label: 'OTT & Theatrical', path: '/distribution' },
+    { label: 'Music & Audio', path: '/music' }
+  ],
 };
 
 export default function Layout({ children }: { children: ReactNode }) {
@@ -19,7 +37,6 @@ export default function Layout({ children }: { children: ReactNode }) {
   const isHiddenPage = location.pathname === '/' || location.pathname === '/login';
   const isAudience = role === 'AUDIENCE';
 
-  // Get the specific links for the logged-in role
   const currentLinks = isAudience ? [] : NAV_LINKS[role as keyof typeof NAV_LINKS] || [];
 
   const handleSignOut = () => {
@@ -29,7 +46,6 @@ export default function Layout({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen bg-cine-void text-cine-ivory flex flex-col">
-      
       {!isHiddenPage && (
         <nav className="sticky top-0 w-full z-50 bg-cine-void/90 backdrop-blur-md border-b border-cine-border">
           <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -43,18 +59,17 @@ export default function Layout({ children }: { children: ReactNode }) {
               </span>
             </Link>
 
-            {/* Dynamic Role-Based Links */}
             <div className="hidden md:flex items-center gap-8">
               {isAudience ? (
                 <Link to="/portfolio" className="font-body text-xs tracking-ultra text-cine-dust uppercase hover:text-cine-cream transition-colors">Released Films</Link>
               ) : (
                 currentLinks.map((item) => (
                   <Link 
-                    key={item} 
-                    to={`/${item.toLowerCase().replace(' ', '-')}`} 
-                    className="font-body text-xs tracking-ultra text-cine-dust uppercase hover:text-cine-cream transition-colors"
+                    key={item.label} 
+                    to={item.path} 
+                    className={`font-body text-xs tracking-ultra uppercase transition-colors ${location.pathname === item.path ? 'text-cine-gold font-bold' : 'text-cine-dust hover:text-cine-cream'}`}
                   >
-                    {item}
+                    {item.label}
                   </Link>
                 ))
               )}
@@ -67,12 +82,11 @@ export default function Layout({ children }: { children: ReactNode }) {
                   <span>Staff Login</span>
                 </Link>
               ) : (
-                <button onClick={handleSignOut} className="flex items-center gap-2 font-caption text-xs tracking-ultra uppercase text-cine-scarlet border border-cine-scarlet/40 px-4 py-1.5 hover:bg-cine-scarlet/10 transition-colors">
+                <button onClick={handleSignOut} className="flex items-center gap-2 font-caption text-xs tracking-ultra uppercase text-red-500 border border-red-900/40 px-4 py-1.5 hover:bg-red-900/20 transition-colors">
                   <LogOut className="w-3.5 h-3.5" />
                   <span>Sign Out</span>
                 </button>
               )}
-              
               <button className="md:hidden text-cine-dust hover:text-cine-ivory">
                 <Menu className="w-5 h-5" />
               </button>

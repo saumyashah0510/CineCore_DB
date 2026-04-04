@@ -1,13 +1,15 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Shield, Wallet, CalendarDays, Clapperboard, ChevronLeft } from 'lucide-react';
+import { Shield, Wallet, Clapperboard, ChevronLeft, Users, MonitorPlay } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
+// Added the "icon" property back to each role!
 const roles = [
-  { id: 'ADMIN', label: 'System Admin', icon: Shield, desc: 'Full matrix access, distribution & audits.' },
-  { id: 'FINANCE_MANAGER', label: 'Finance Head', icon: Wallet, desc: 'Budgets, ledgers, and contract milestones.' },
-  { id: 'PRODUCTION_MANAGER', label: 'Production Lead', icon: CalendarDays, desc: 'Logistics, locations, and shoot schedules.' },
-  { id: 'DIRECTOR', label: 'Creative Director', icon: Clapperboard, desc: 'Script vault and talent rosters.' },
+  { id: 'ADMIN', label: 'Production Admin', desc: 'Greenlight projects & monitor studio health', icon: Shield },
+  { id: 'TALENT_MANAGER', label: 'Talent Manager', desc: 'Manage casting, contracts & scripts', icon: Users },
+  { id: 'FINANCE_MANAGER', label: 'Finance Manager', desc: 'Clear milestones & track budget overruns', icon: Wallet },
+  { id: 'PRODUCTION_MANAGER', label: 'Production Manager', desc: 'Locations, permits & shoot schedules', icon: Clapperboard },
+  { id: 'DISTRIBUTION_MANAGER', label: 'Distribution Manager', desc: 'OTT deals, box office & music rights', icon: MonitorPlay }
 ] as const;
 
 export default function Login() {

@@ -63,3 +63,24 @@ async def get_person_contracts(person_id: int, db: AsyncSession = Depends(get_db
         ORDER BY c.signing_date DESC
     """), {"pid": person_id})
     return [dict(r) for r in result.mappings().all()]
+
+
+# ── ADDED DELETE ROUTE TO FIX "METHOD NOT ALLOWED" ──
+@router.delete("/{person_id}", status_code=204)
+async def delete_person(person_id: int, db: AsyncSession = Depends(get_db)):
+    try:
+        result = await db.execute(
+            text("DELETE FROM cinecore.person WHERE person_id = :id RETURNING person_id"),
+            {"id": person_id}
+        )
+        if not result.first():
+            raise HTTPException(status_code=404, detail="Person not found")
+            
+        await db.commit()
+        # CRITICAL: Clear the cache when a person is deleted!
+        await cache_delete_pattern("persons:*")
+        return None
+    except Exception as e:
+        await db.rollback()
+        # This will catch PostgreSQL IntegrityErrors (e.g., if they have a contract)
+        raise HTTPException(status_code=400, detail=str(e))

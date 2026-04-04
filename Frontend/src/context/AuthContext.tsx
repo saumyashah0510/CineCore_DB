@@ -1,25 +1,32 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 
-type Role = 'ADMIN' | 'PRODUCTION_MANAGER' | 'FINANCE_MANAGER' | 'DIRECTOR' | 'AUDIENCE';
+// EXACT ROLES FROM THE DATABASE SCENARIOS DOC
+export type UserRole = 
+  | 'AUDIENCE' 
+  | 'ADMIN' 
+  | 'TALENT_MANAGER' 
+  | 'FINANCE_MANAGER' 
+  | 'PRODUCTION_MANAGER' 
+  | 'DISTRIBUTION_MANAGER';
 
 interface AuthContextType {
-  role: Role;
-  login: (role: Role) => void;
+  role: UserRole;
+  login: (role: UserRole) => void;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [role, setRole] = useState<Role>('AUDIENCE');
+  const [role, setRole] = useState<UserRole>('AUDIENCE');
 
   useEffect(() => {
-    const saved = localStorage.getItem('cinecore_role') as Role;
-    if (saved) setRole(saved);
+    const savedRole = localStorage.getItem('cinecore_role') as UserRole;
+    if (savedRole) setRole(savedRole);
   }, []);
 
-  const login = (newRole: Role) => {
+  const login = (newRole: UserRole) => {
     setRole(newRole);
     localStorage.setItem('cinecore_role', newRole);
   };
@@ -36,8 +43,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export function useAuth() {
+export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (context === undefined) throw new Error('useAuth must be used within an AuthProvider');
+  if (!context) throw new Error('useAuth must be used within an AuthProvider');
   return context;
-}
+};
