@@ -8,6 +8,8 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Portfolio from './pages/Portfolio';
 import ProjectDetail from './pages/ProjectDetail';
+import AllProjects from './pages/AllProjects';
+import Distribution from './pages/Distribution';
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: false, retry: 1 } },
@@ -26,6 +28,8 @@ function App() {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/portfolio" element={<Portfolio />} /> 
                 <Route path="/project/:id" element={<ProjectDetail />} />
+                <Route path="/all-projects" element={<AllProjects />} />
+                <Route path="/distribution" element={<Distribution />} />
               </Routes>
             </AnimatePresence>
           </Layout>

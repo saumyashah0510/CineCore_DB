@@ -68,13 +68,13 @@ async def get_project(project_id: int, db: AsyncSession = Depends(get_db)):
 @router.post("/", response_model=dict, status_code=201)
 async def create_project(payload: ProjectCreate, db: AsyncSession = Depends(get_db)):
     try:
+        # FIX: Removed the "SELECT * FROM () AS result" wrapper.
+        # Now it just directly CALLs the procedure!
         result = await db.execute(text("""
-            SELECT * FROM (
-                CALL cinecore.sp_create_project(
-                    :title, :house_id, :genre, :language, :format,
-                    :total_budget, :start_date, :expected_release, NULL
-                )
-            ) AS result
+            CALL cinecore.sp_create_project(
+                :title, :house_id, :genre, :language, :format,
+                :total_budget, :start_date, :expected_release, NULL
+            )
         """), {
             "title":           payload.title,
             "house_id":        payload.house_id,
@@ -85,11 +85,15 @@ async def create_project(payload: ProjectCreate, db: AsyncSession = Depends(get_
             "start_date":      payload.start_date,
             "expected_release":payload.expected_release_date,
         })
+        
+        # asyncpg handles OUT parameters by returning them as a row from the CALL statement
         row = result.mappings().first()
         new_id = row["p_project_id"] if row else None
+        
         await db.commit()
         await cache_delete_pattern("projects:*")
         return {"project_id": new_id, "message": "Project created with 6 budget heads"}
+    
     except Exception as e:
         await db.rollback()
         raise HTTPException(status_code=400, detail=str(e))
@@ -175,3 +179,30 @@ async def get_overdue_payments(project_id: int, db: AsyncSession = Depends(get_d
         ORDER BY pm.due_date ASC
     """), {"pid": project_id})
     return [dict(r) for r in result.mappings().all()]
+
+
+@router.delete("/{project_id}", status_code=204)
+async def delete_project(project_id: int, db: AsyncSession = Depends(get_db)):
+    try:
+        # 1. Manually delete the auto-created budget heads first (fixes the FK constraint)
+        await db.execute(
+            text("DELETE FROM cinecore.budget_head WHERE project_id = :id"),
+            {"id": project_id}
+        )
+        
+        # 2. Now delete the actual project
+        result = await db.execute(
+            text("DELETE FROM cinecore.project WHERE project_id = :id RETURNING project_id"),
+            {"id": project_id}
+        )
+        
+        if not result.first():
+            raise HTTPException(status_code=404, detail="Project not found")
+            
+        await db.commit()
+        await cache_delete_pattern("projects:*") # Clear cache so React updates
+        return None
+        
+    except Exception as e:
+        await db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
