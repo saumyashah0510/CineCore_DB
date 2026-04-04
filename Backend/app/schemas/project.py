@@ -39,9 +39,13 @@ class ProjectSummary(BaseModel):
     title: str
     production_house: str
     status: str
-    total_budget: Decimal
-    contracts: int
+    total_budget: float
+    total_used: float  # For the progress bars
     expenses: int
-    songs: int
-    ott_deals: int
-    theatre_cities: int
+    overspent_flag: bool
+    contracts: int     # <--- Required by validation
+    songs: int         # <--- Required by validation
+    ott_deals: int     # <--- Required by validation
+    theatre_cities: int # <--- Required by validation
+
+    model_config = ConfigDict(from_attributes=True)

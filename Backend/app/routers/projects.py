@@ -19,31 +19,37 @@ async def list_projects(db: AsyncSession = Depends(get_db)):
         return cached
 
     result = await db.execute(text("""
-        SELECT
-            p.project_id,
-            p.title,
-            ph.name                              AS production_house,
-            p.status,
+        SELECT 
+            p.project_id, 
+            p.title, 
+            ph.name AS production_house, 
+            p.status, 
             p.total_budget,
-            COUNT(DISTINCT c.contract_id)         AS contracts,
-            COUNT(DISTINCT e.expense_id)          AS expenses,
-            COUNT(DISTINCT s.song_id)             AS songs,
-            COUNT(DISTINCT od.deal_id)            AS ott_deals,
-            COUNT(DISTINCT tr.theatre_release_id) AS theatre_cities
+            -- 1. Actual Spending (Aggregated for Dashboard)
+            (
+                COALESCE((SELECT SUM(amount) FROM cinecore.expense WHERE project_id = p.project_id AND status = 'APPROVED'), 0) +
+                COALESCE((SELECT SUM(pm.amount) FROM cinecore.payment_milestone pm 
+                          JOIN cinecore.contract c ON c.contract_id = pm.contract_id 
+                          WHERE c.project_id = p.project_id AND pm.payment_status = 'PAID'), 0)
+            ) AS total_used,
+            -- 2. Required Schema Fields (Missing in your current error)
+            (SELECT COUNT(*) FROM cinecore.contract WHERE project_id = p.project_id)::int AS contracts,
+            (SELECT COUNT(*) FROM cinecore.song WHERE project_id = p.project_id)::int AS songs,
+            (SELECT COUNT(*) FROM cinecore.ott_deal WHERE project_id = p.project_id)::int AS ott_deals,
+            (SELECT COUNT(*) FROM cinecore.theatre_release WHERE project_id = p.project_id)::int AS theatre_cities,
+            -- 3. Additional Metadata
+            COUNT(DISTINCT e.expense_id)::int AS expenses,
+            COALESCE(EXISTS(SELECT 1 FROM cinecore.budget_head bh WHERE bh.project_id = p.project_id AND bh.overspent_flag = TRUE), FALSE) AS overspent_flag
         FROM cinecore.project p
-        JOIN cinecore.production_house ph ON ph.house_id = p.house_id
-        LEFT JOIN cinecore.contract c         ON c.project_id  = p.project_id
-        LEFT JOIN cinecore.expense e          ON e.project_id  = p.project_id
-        LEFT JOIN cinecore.song s             ON s.project_id  = p.project_id
-        LEFT JOIN cinecore.ott_deal od        ON od.project_id = p.project_id
-        LEFT JOIN cinecore.theatre_release tr ON tr.project_id = p.project_id
-        GROUP BY p.project_id, p.title, ph.name, p.status, p.total_budget
-        ORDER BY p.project_id
+        JOIN cinecore.production_house ph ON p.house_id = ph.house_id
+        LEFT JOIN cinecore.expense e ON e.project_id = p.project_id
+        GROUP BY p.project_id, ph.name
+        ORDER BY p.project_id DESC
     """))
+    
     data = [dict(r) for r in result.mappings().all()]
     await cache_set(cache_key, data, CACHE_TTL_MEDIUM)
     return data
-
 
 @router.get("/{project_id}", response_model=ProjectResponse)
 async def get_project(project_id: int, db: AsyncSession = Depends(get_db)):
@@ -206,3 +212,15 @@ async def delete_project(project_id: int, db: AsyncSession = Depends(get_db)):
     except Exception as e:
         await db.rollback()
         raise HTTPException(status_code=400, detail=str(e))
+    
+
+@router.get("/{project_id}/overruns", response_model=list[str])
+async def get_project_overruns(project_id: int, db: AsyncSession = Depends(get_db)):
+    """Returns a list of department names that have exceeded their budget."""
+    result = await db.execute(text("""
+        SELECT category_name 
+        FROM cinecore.budget_head 
+        WHERE project_id = :pid AND overspent_flag = TRUE
+    """), {"pid": project_id})
+    
+    return [r[0] for r in result.all()]    

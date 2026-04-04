@@ -22,14 +22,13 @@ async def get_expenses_for_project(project_id: int, db: AsyncSession = Depends(g
 @router.post("/", response_model=dict, status_code=201)
 async def record_expense(payload: ExpenseCreate, db: AsyncSession = Depends(get_db)):
     try:
+        # FIXED: Removed 'SELECT * FROM (CALL ...)' wrapper
         result = await db.execute(text("""
-            SELECT * FROM (
-                CALL cinecore.sp_record_expense(
-                    :project_id, :budget_head_id, :vendor_id,
-                    :description, :amount, :expense_date,
-                    :payment_mode, :invoice_no, NULL
-                )
-            ) AS result
+            CALL cinecore.sp_record_expense(
+                :project_id, :budget_head_id, :vendor_id,
+                :description, :amount, :expense_date,
+                :payment_mode, :invoice_no, NULL
+            )
         """), {
             "project_id":     payload.project_id,
             "budget_head_id": payload.budget_head_id,
@@ -42,6 +41,7 @@ async def record_expense(payload: ExpenseCreate, db: AsyncSession = Depends(get_
         })
         row = result.mappings().first()
         new_id = row["p_expense_id"] if row else None
+        
         await db.commit()
         await cache_delete_pattern(f"projects:{payload.project_id}:budget")
         return {"expense_id": new_id, "message": "Expense recorded (status: PENDING)"}

@@ -84,8 +84,8 @@ async def get_milestones(contract_id: int, db: AsyncSession = Depends(get_db)):
 
 @router.patch("/{milestone_id}/pay", response_model=dict)
 async def mark_milestone_paid(milestone_id: int, payload: PaymentMilestoneUpdate, db: AsyncSession = Depends(get_db)):
-    """Mark a payment milestone as PAID."""
     try:
+        # 1. Update the milestone
         result = await db.execute(text("""
             UPDATE cinecore.payment_milestone
             SET payment_status = 'PAID',
@@ -98,10 +98,20 @@ async def mark_milestone_paid(milestone_id: int, payload: PaymentMilestoneUpdate
         row = result.mappings().first()
         if not row:
             raise HTTPException(status_code=404, detail="Milestone not found")
+
+        # 2. Get the Project ID associated with this contract to clear its specific cache
+        project_result = await db.execute(text("""
+            SELECT project_id FROM cinecore.contract WHERE contract_id = :cid
+        """), {"cid": row["contract_id"]})
+        project_id = project_result.scalar()
+
         await db.commit()
-        return {"message": "Milestone marked as PAID"}
-    except HTTPException:
-        raise
+
+        # 3. CRITICAL: Clear all project-related caches so the dashboard updates!
+        await cache_delete_pattern("projects:*")
+        await cache_delete_pattern(f"contracts:project:{project_id}")
+        
+        return {"message": "Milestone marked as PAID and dashboard cache cleared"}
     except Exception as e:
         await db.rollback()
         raise HTTPException(status_code=400, detail=str(e))

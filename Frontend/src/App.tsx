@@ -12,6 +12,8 @@ import AllProjects from './pages/AllProjects';
 import TalentRegistry from './pages/TalentRegistry';
 import Contracts from './pages/Contracts';
 import Scripts from './pages/Scripts';
+import ExpenseLedger from './pages/ExpenseLedger';
+import MilestoneRegistry from './pages/MilestoneRegistry';
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: false, retry: 1 } },
@@ -34,6 +36,8 @@ function App() {
                 <Route path="/talent" element={<TalentRegistry />} />
                 <Route path="/contracts" element={<Contracts />} />
                 <Route path="/scripts" element={<Scripts />} />
+                <Route path="/ledger" element={<ExpenseLedger />} />
+                <Route path="/payments" element={<MilestoneRegistry />} />
               </Routes>
             </AnimatePresence>
           </Layout>

@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion';
 import {
-  Film, Users, Wallet, MapPin, MonitorPlay,
-  AlertCircle, FileText, Music, Calendar, Clapperboard,
+  Film, Users, Wallet, MapPin, MonitorPlay, FileText, Music, Calendar, Clapperboard, AlertTriangle
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
@@ -11,14 +10,16 @@ import { api } from '../lib/api';
 export default function Dashboard() {
   const { role } = useAuth();
 
-  // 1. Dynamic Project Fetching for Admin & Finance views
+  // 1. Fetch real project data for Admin & Finance logic
+  // We fetch 'projectsAll' which now includes 'total_used' from our backend update
   const { data: projects, isLoading: projectsLoading } = useQuery({
     queryKey: ['projectsAll'],
     queryFn: async () => {
       const { data } = await api.get('/projects/');
       return data;
     },
-    enabled: role === 'ADMIN' || role === 'FINANCE_MANAGER'
+    // Refresh data when we return to dashboard to show updated milestone spending
+    refetchOnWindowFocus: true
   });
 
   // 2. Calculations for Admin Visuals
@@ -27,6 +28,24 @@ export default function Dashboard() {
   const releasedProjects = projects?.filter((p: any) => p.status === 'RELEASED').length || 0;
 
   const displayRole = role.replace('_', ' ');
+
+  function OverrunWarning({ projectId }: { projectId: number }) {
+    const { data: overruns } = useQuery({
+      queryKey: ['overruns', projectId],
+      queryFn: async () => (await api.get(`/projects/${projectId}/overruns`)).data,
+    });
+
+    if (!overruns || overruns.length === 0) return null;
+
+    return (
+      <div className="mt-2 flex items-start gap-2 bg-red-500/10 border border-red-500/20 p-2">
+        <AlertTriangle className="w-3 h-3 text-red-500 shrink-0 mt-0.5" />
+        <p className="font-mono text-[9px] text-red-400 leading-tight">
+          CRITICAL: {overruns.join(', ')} limit exceeded. Adjust allocations in Ledger.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-12 w-full">
@@ -74,20 +93,6 @@ export default function Dashboard() {
               <div className="font-display text-2xl text-cine-ivory">{releasedProjects}</div>
             </div>
           </div>
-
-          <div className="border border-red-900/30 bg-red-900/10 p-6">
-            <h3 className="font-caption text-xs tracking-widest text-red-500 uppercase flex items-center gap-2 mb-4">
-              <AlertCircle className="w-4 h-4" /> Studio Alerts
-            </h3>
-            <div className="space-y-2 font-mono text-sm text-cine-cream">
-              <div className="flex justify-between border-b border-red-900/20 py-2">
-                <span>Overspent Budget Heads</span> <span className="text-red-400">1 Warning</span>
-              </div>
-              <div className="flex justify-between py-2">
-                <span>Overdue Milestone Payments</span> <span className="text-red-400">21 Pending</span>
-              </div>
-            </div>
-          </div>
         </motion.div>
       )}
 
@@ -108,46 +113,16 @@ export default function Dashboard() {
               <div><h3 className="font-display text-xl text-cine-ivory">Script Vault</h3><p className="font-mono text-[10px] text-cine-dust uppercase">Review Writer Drafts</p></div>
             </Link>
           </div>
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="border border-cine-border bg-cine-onyx p-6">
               <h3 className="font-caption text-xs tracking-widest text-cine-dust uppercase mb-6 flex items-center gap-2">
                 <FileText className="w-4 h-4" /> Contract Status Pipeline
               </h3>
-              <div className="space-y-4">
-                <div>
-                  <div className="flex justify-between font-mono text-xs mb-1"><span className="text-cine-cream">Completed</span><span className="text-cine-gold">73.33%</span></div>
-                  <div className="w-full bg-cine-void h-2 rounded-full overflow-hidden"><div className="bg-cine-gold h-full" style={{ width: '73%' }} /></div>
-                </div>
-                <div>
-                  <div className="flex justify-between font-mono text-xs mb-1"><span className="text-cine-cream">Active</span><span className="text-blue-400">26.67%</span></div>
-                  <div className="w-full bg-cine-void h-2 rounded-full overflow-hidden"><div className="bg-blue-400 h-full" style={{ width: '26%' }} /></div>
-                </div>
-              </div>
-            </div>
-
-            <div className="border border-cine-border bg-cine-onyx p-6">
-              <h3 className="font-caption text-xs tracking-widest text-cine-dust uppercase mb-6 flex items-center gap-2">
-                <Users className="w-4 h-4" /> Talent Composition
-              </h3>
-              <div className="w-full h-8 flex gap-1 mb-4">
-                <div className="bg-cine-gold h-full flex-grow relative group" style={{ flexBasis: '50%' }}>
-                  <span className="absolute -top-6 left-1 opacity-0 group-hover:opacity-100 font-mono text-[10px] text-cine-gold transition-opacity">Actors</span>
-                </div>
-                <div className="bg-purple-400 h-full flex-grow relative group" style={{ flexBasis: '25%' }}>
-                  <span className="absolute -top-6 left-1 opacity-0 group-hover:opacity-100 font-mono text-[10px] text-purple-400 transition-opacity">Writers</span>
-                </div>
-                <div className="bg-blue-400 h-full flex-grow relative group" style={{ flexBasis: '15%' }}>
-                  <span className="absolute -top-6 left-1 opacity-0 group-hover:opacity-100 font-mono text-[10px] text-blue-400 transition-opacity">Directors</span>
-                </div>
-                <div className="bg-cine-border h-full flex-grow relative group" style={{ flexBasis: '10%' }}>
-                  <span className="absolute -top-6 right-0 opacity-0 group-hover:opacity-100 font-mono text-[10px] text-cine-dust transition-opacity">Other</span>
-                </div>
-              </div>
-              <div className="flex justify-between font-mono text-[10px] text-cine-dust uppercase tracking-wider">
-                <span className="flex items-center gap-1"><div className="w-2 h-2 bg-cine-gold" /> Actors</span>
-                <span className="flex items-center gap-1"><div className="w-2 h-2 bg-purple-400" /> Writers</span>
-                <span className="flex items-center gap-1"><div className="w-2 h-2 bg-blue-400" /> Directors</span>
+              <div className="space-y-4 font-mono text-xs">
+                <div className="flex justify-between mb-1"><span className="text-cine-cream">Completed</span><span className="text-cine-gold">73%</span></div>
+                <div className="w-full bg-cine-void h-1.5 rounded-full overflow-hidden"><div className="bg-cine-gold h-full" style={{ width: '73%' }} /></div>
+                <div className="flex justify-between mb-1"><span className="text-cine-cream">Active</span><span className="text-blue-400">27%</span></div>
+                <div className="w-full bg-cine-void h-1.5 rounded-full overflow-hidden"><div className="bg-blue-400 h-full" style={{ width: '27%' }} /></div>
               </div>
             </div>
           </div>
@@ -158,7 +133,6 @@ export default function Dashboard() {
       {role === 'FINANCE_MANAGER' && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
 
-          {/* ── TOP ACTION TILES ── */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Link to="/ledger" className="group bg-cine-onyx border border-cine-border p-6 hover:border-cine-gold transition-all">
               <Wallet className="w-8 h-8 text-cine-gold mb-4" />
@@ -166,54 +140,50 @@ export default function Dashboard() {
               <p className="font-body text-sm text-cine-dust mt-2">Log new vendor invoices and assign them to departments.</p>
               <div className="mt-4 font-mono text-[10px] text-cine-gold uppercase tracking-widest">Add New Expense →</div>
             </Link>
-
             <Link to="/payments" className="group bg-cine-onyx border border-cine-border p-6 hover:border-cine-gold transition-all">
               <FileText className="w-8 h-8 text-cine-gold mb-4" />
               <h3 className="font-display text-2xl text-cine-ivory">Milestone Payments</h3>
               <p className="font-body text-sm text-cine-dust mt-2">View and clear the 30/40/30 payments for signed talent.</p>
-              <div className="mt-4 font-mono text-[10px] text-cine-gold uppercase tracking-widest">Clear 21 Pending →</div>
+              <div className="mt-4 font-mono text-[10px] text-cine-gold uppercase tracking-widest">Clear Pending →</div>
             </Link>
           </div>
 
-          {/* ── PROJECT BUDGET MONITOR ── */}
           <div className="bg-cine-onyx border border-cine-border overflow-hidden">
-            <div className="p-4 border-b border-cine-border bg-cine-void/50">
-              <h3 className="font-caption text-xs tracking-widest text-cine-dust uppercase">Studio Budget Overview</h3>
+            <div className="p-4 border-b border-cine-border bg-cine-void/50 flex justify-between items-center">
+              <h3 className="font-caption text-xs tracking-widest text-cine-dust uppercase italic">Live Budget Utilization (Milestones + Expenses)</h3>
             </div>
 
             <div className="divide-y divide-cine-border/50">
               {projects?.map((p: any) => (
                 <div key={p.project_id} className="p-6 hover:bg-cine-border/10 transition-colors">
-                  <div className="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-4">
+                  <div className="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-5">
                     <div>
                       <h4 className="font-display text-xl text-cine-ivory">{p.title}</h4>
-                      <p className="font-mono text-[10px] text-cine-dust uppercase tracking-wider">{p.production_house} • {p.status}</p>
-                    </div>
-                    <div className="text-right">
-                      <span className="font-mono text-xs text-cine-dust uppercase block mb-1">Sanctioned Budget</span>
-                      <span className="font-display text-2xl text-cine-gold">₹{(p.total_budget / 10000000).toFixed(2)} Cr</span>
+                      <p className="font-mono text-[10px] text-cine-dust uppercase tracking-wider">{p.status} • {p.production_house}</p>
+
+                      {/* NEW: Dynamic Reason Text */}
+                      {p.overspent_flag && <OverrunWarning projectId={p.project_id} />}
                     </div>
                   </div>
 
-                  {/* Simple Visual: Expenses vs Budget */}
+                  {/* DYNAMIC PROGRESS BAR: Moves when milestones are paid */}
                   <div className="space-y-2">
-                    <div className="flex justify-between font-mono text-[10px] text-cine-dust uppercase">
-                      <span>Expenses Recorded</span>
-                      <span>{p.expenses} Invoices Logged</span>
-                    </div>
                     <div className="w-full bg-cine-void h-2 rounded-full overflow-hidden border border-cine-border">
-                      {/* We use the expense count just for visual since we're fetching project summary */}
-                      <div
-                        className="bg-cine-gold h-full"
-                        style={{ width: p.expenses > 0 ? '35%' : '0%' }}
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: `${Math.min((p.total_used / p.total_budget) * 100, 100)}%` }}
+                        className={`h-full transition-all duration-1000 ${p.overspent_flag ? 'bg-red-500' : 'bg-cine-gold'}`}
                       />
+                    </div>
+                    <div className="flex justify-between font-mono text-[9px] text-cine-dust uppercase tracking-widest">
+                      <span>{((p.total_used / p.total_budget) * 100).toFixed(1)}% Depleted</span>
+                      <span>{p.expenses} Invoices • {p.status === 'RELEASED' ? 'FINALIZED' : 'ACTIVE'}</span>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
           </div>
-
         </motion.div>
       )}
 
@@ -255,7 +225,6 @@ export default function Dashboard() {
           </Link>
         </motion.div>
       )}
-
     </div>
   );
 }
