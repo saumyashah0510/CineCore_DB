@@ -8,6 +8,19 @@ from app.schemas.contract import ContractCreate, ContractResponse, PaymentMilest
 
 router = APIRouter(prefix="/contracts", tags=["Contracts"])
 
+# ── 1. ADDED MISSING GLOBAL GET ROUTE (For the React Table) ──
+@router.get("/")
+async def list_contracts(db: AsyncSession = Depends(get_db)):
+    """Fetches all contracts globally and joins names/titles for the frontend table."""
+    result = await db.execute(text("""
+        SELECT c.*, p.full_name as person_name, pr.title as project_title
+        FROM cinecore.contract c
+        JOIN cinecore.person p ON c.person_id = p.person_id
+        JOIN cinecore.project pr ON c.project_id = pr.project_id
+        ORDER BY c.signing_date DESC
+    """))
+    return [dict(r) for r in result.mappings().all()]
+
 
 @router.get("/project/{project_id}", response_model=list[ContractResponse])
 async def get_contracts_for_project(project_id: int, db: AsyncSession = Depends(get_db)):
@@ -30,13 +43,12 @@ async def get_contracts_for_project(project_id: int, db: AsyncSession = Depends(
 @router.post("/", response_model=dict, status_code=201)
 async def sign_contract(payload: ContractCreate, db: AsyncSession = Depends(get_db)):
     try:
+        # ── 2. FIXED SQL SYNTAX: Removed 'SELECT * FROM () AS result' ──
         result = await db.execute(text("""
-            SELECT * FROM (
-                CALL cinecore.sp_sign_contract(
-                    :person_id, :project_id, :role, :character_name,
-                    :contract_fee, :signing_date, :start_date, :end_date, NULL
-                )
-            ) AS result
+            CALL cinecore.sp_sign_contract(
+                :person_id, :project_id, :role, :character_name,
+                :contract_fee, :signing_date, :start_date, :end_date, NULL
+            )
         """), {
             "person_id":      payload.person_id,
             "project_id":     payload.project_id,
@@ -49,9 +61,11 @@ async def sign_contract(payload: ContractCreate, db: AsyncSession = Depends(get_
         })
         row = result.mappings().first()
         new_id = row["p_contract_id"] if row else None
+        
         await db.commit()
         await cache_delete_pattern(f"contracts:project:{payload.project_id}")
         return {"contract_id": new_id, "message": "Contract signed. 3 payment milestones auto-created."}
+        
     except Exception as e:
         await db.rollback()
         raise HTTPException(status_code=400, detail=str(e))

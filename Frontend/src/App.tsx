@@ -10,6 +10,8 @@ import Portfolio from './pages/Portfolio';
 import ProjectDetail from './pages/ProjectDetail';
 import AllProjects from './pages/AllProjects';
 import TalentRegistry from './pages/TalentRegistry';
+import Contracts from './pages/Contracts';
+import Scripts from './pages/Scripts';
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: false, retry: 1 } },
@@ -30,6 +32,8 @@ function App() {
                 <Route path="/project/:id" element={<ProjectDetail />} />
                 <Route path="/all-projects" element={<AllProjects />} />
                 <Route path="/talent" element={<TalentRegistry />} />
+                <Route path="/contracts" element={<Contracts />} />
+                <Route path="/scripts" element={<Scripts />} />
               </Routes>
             </AnimatePresence>
           </Layout>

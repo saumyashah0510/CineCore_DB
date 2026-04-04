@@ -10,20 +10,24 @@ const NAV_LINKS = {
     { label: 'All Projects', path: '/all-projects' }
   ],
   TALENT_MANAGER: [
+    { label: 'Dashboard', path: '/dashboard' }, // <-- Added!
     { label: 'Talent Registry', path: '/talent' },
     { label: 'Contracts', path: '/contracts' },
     { label: 'Scripts', path: '/scripts' }
   ],
   FINANCE_MANAGER: [
+    { label: 'Dashboard', path: '/dashboard' }, // <-- Added!
     { label: 'Expense Ledger', path: '/ledger' },
     { label: 'Milestone Payments', path: '/payments' }
   ],
   PRODUCTION_MANAGER: [
+    { label: 'Dashboard', path: '/dashboard' }, // <-- Added!
     { label: 'Locations', path: '/locations' },
     { label: 'Schedules', path: '/schedules' },
     { label: 'Permits', path: '/permits' }
   ],
   DISTRIBUTION_MANAGER: [
+    { label: 'Dashboard', path: '/dashboard' }, // <-- Added!
     { label: 'OTT & Theatrical', path: '/distribution' },
     { label: 'Music & Audio', path: '/music' }
   ],
