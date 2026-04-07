@@ -14,6 +14,11 @@ import Contracts from './pages/Contracts';
 import Scripts from './pages/Scripts';
 import ExpenseLedger from './pages/ExpenseLedger';
 import MilestoneRegistry from './pages/MilestoneRegistry';
+import Locations from './pages/Locations';
+import Schedules from './pages/Schedules';
+import Permits from './pages/Permits';
+import Distribution from './pages/Distribution';
+import MusicCatalog from './pages/MusicCatalog';
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: false, retry: 1 } },
@@ -38,6 +43,13 @@ function App() {
                 <Route path="/scripts" element={<Scripts />} />
                 <Route path="/ledger" element={<ExpenseLedger />} />
                 <Route path="/payments" element={<MilestoneRegistry />} />
+                {/* Production Manager Pages */}
+                <Route path="/locations" element={<Locations />} />
+                <Route path="/schedules" element={<Schedules />} />
+                <Route path="/permits" element={<Permits />} />
+                {/* Distribution Manager Pages */}
+                <Route path="/distribution" element={<Distribution />} />
+                <Route path="/music" element={<MusicCatalog />} />
               </Routes>
             </AnimatePresence>
           </Layout>
