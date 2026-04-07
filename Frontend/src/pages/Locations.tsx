@@ -95,9 +95,9 @@ export default function Locations() {
           <span className="font-mono text-xs tracking-widest text-cine-gold uppercase mb-2 block">
             Production Manager
           </span>
-          <h1 className="font-display text-4xl text-cine-ivory">Location Registry</h1>
+          <h1 className="font-display text-4xl text-gradient-gold">Location Registry</h1>
           <p className="font-body text-sm text-cine-dust mt-2">
-            Manage OUTDOOR, INDOOR_SET, and FOREIGN shoot locations across all projects.
+            Manage outdoor, indoor set, and international shoot locations across all projects.
           </p>
         </div>
         <div className="flex items-center gap-4">
@@ -123,7 +123,7 @@ export default function Locations() {
           </select>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-2 bg-cine-gold text-cine-void px-5 py-2 font-caption text-xs font-bold tracking-widest uppercase hover:bg-cine-gold-light transition-colors"
+            className="magnetic-btn flex items-center gap-2 bg-cine-gold text-cine-void px-5 py-2 font-caption text-xs font-bold tracking-widest uppercase hover:bg-cine-gold-light transition-colors"
           >
             <Plus className="w-4 h-4" /> Add Location
           </button>

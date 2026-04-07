@@ -112,9 +112,9 @@ export default function Permits() {
           <span className="font-mono text-xs tracking-widest text-cine-gold uppercase mb-2 block">
             Production Manager
           </span>
-          <h1 className="font-display text-4xl text-cine-ivory">Permit Authority</h1>
+          <h1 className="font-display text-4xl text-gradient-gold">Permit Authority</h1>
           <p className="font-body text-sm text-cine-dust mt-2">
-            Track SHOOTING, DRONE_FLIGHT, PARKING, and NIGHT_SHOOT clearances.
+            Track shooting, drone flight, parking, and night shoot clearances.
           </p>
         </div>
         <div className="flex items-center gap-4">

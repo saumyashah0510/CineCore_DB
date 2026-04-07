@@ -99,9 +99,9 @@ export default function Schedules() {
           <span className="font-mono text-xs tracking-widest text-cine-gold uppercase mb-2 block">
             Production Manager
           </span>
-          <h1 className="font-display text-4xl text-cine-ivory">Shoot Schedules</h1>
+          <h1 className="font-display text-4xl text-gradient-gold">Shoot Schedules</h1>
           <p className="font-body text-sm text-cine-dust mt-2">
-            Plan and track shoot days — DB Trigger 4 prevents location double-booking.
+            Plan and manage shoot days with automatic scheduling conflict prevention.
           </p>
         </div>
         <div className="flex items-center gap-4">

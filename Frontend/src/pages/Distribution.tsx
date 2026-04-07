@@ -169,9 +169,9 @@ export default function Distribution() {
           <span className="font-mono text-xs tracking-widest text-cine-gold uppercase mb-2 block">
             Distribution Manager
           </span>
-          <h1 className="font-display text-4xl text-cine-ivory">Distribution Matrix</h1>
+          <h1 className="font-display text-4xl text-gradient-gold">Distribution Matrix</h1>
           <p className="font-body text-sm text-cine-dust mt-2">
-            OTT deals with audit trail (Trigger 3) and Theatre box office tracking.
+            Manage OTT platform deals and track theatre box office collections.
           </p>
         </div>
         <div className="flex items-center gap-4">
@@ -303,7 +303,7 @@ export default function Distribution() {
                   {auditDealId === deal.deal_id && auditLog && (
                     <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="mt-4 border-t border-cine-border pt-4">
                       <h4 className="font-caption text-xs tracking-widest text-cine-dust uppercase mb-3 flex items-center gap-2">
-                        <History className="w-3.5 h-3.5" /> Change Data Capture — Trigger 3 Audit Log
+                        <History className="w-3.5 h-3.5" /> Deal Change History
                       </h4>
                       {auditLog.length === 0 ? (
                         <p className="font-mono text-xs text-cine-dust">No audit entries.</p>

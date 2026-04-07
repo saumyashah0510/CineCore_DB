@@ -1,10 +1,10 @@
 import { useRef } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
-import { ChevronRight, FileSignature, CalendarDays, Wallet, Network } from 'lucide-react';
+import { ChevronRight, FileSignature, CalendarDays, Wallet, Network, Database, Clapperboard, Film, Users, ShieldCheck, MapPin, MonitorPlay } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { ScrollReveal } from '../components/CinematicEffects';
 
-// ── Grain overlay ─────────────────────────────────────────────────────────────
+// ── Grain overlay ──
 const GrainOverlay = () => (
   <div
     aria-hidden
@@ -16,7 +16,18 @@ const GrainOverlay = () => (
   />
 );
 
-// ── Ornamental rule ───────────────────────────────────────────────────────────
+// ── Film strip side decoration ──
+const FilmStrip = ({ side = 'left' }: { side?: 'left' | 'right' }) => (
+  <div className={`hidden xl:flex fixed top-0 bottom-0 ${side === 'left' ? 'left-0' : 'right-0'} w-10 z-40 flex-col opacity-30`}>
+    {Array.from({ length: 40 }).map((_, i) => (
+      <div key={i} className="flex-1 border-b border-cine-border flex items-center justify-center">
+        <div className="w-4 h-2.5 rounded-[1px] bg-cine-border" />
+      </div>
+    ))}
+  </div>
+);
+
+// ── Ornamental rule ──
 const OrnamentRule = ({ className = '' }: { className?: string }) => (
   <div className={`flex items-center gap-4 ${className}`}>
     <div className="flex-1 h-px bg-gradient-to-r from-transparent via-cine-gold/40 to-transparent" />
@@ -29,33 +40,51 @@ const OrnamentRule = ({ className = '' }: { className?: string }) => (
   </div>
 );
 
-// ── Film strip side decoration ────────────────────────────────────────────────
-const FilmStrip = ({ side = 'left' }: { side?: 'left' | 'right' }) => (
-  <div className={`hidden xl:flex fixed top-0 bottom-0 ${side === 'left' ? 'left-0' : 'right-0'} w-10 z-40 flex-col opacity-30`}>
-    {Array.from({ length: 40 }).map((_, i) => (
-      <div key={i} className="flex-1 border-b border-cine-border flex items-center justify-center">
-        <div className="w-4 h-2.5 rounded-[1px] bg-cine-border" />
-      </div>
-    ))}
+// ── Film countdown circle ──
+const CountdownCircle = ({ number, label }: { number: string; label: string }) => (
+  <div className="flex flex-col items-center gap-3">
+    <div className="relative w-20 h-20 flex items-center justify-center">
+      <svg className="absolute inset-0 w-full h-full" viewBox="0 0 80 80">
+        <circle cx="40" cy="40" r="36" fill="none" stroke="currentColor" strokeWidth="1" className="text-cine-border" />
+        <circle cx="40" cy="40" r="36" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-cine-gold/40"
+          strokeDasharray="226" strokeDashoffset="56" strokeLinecap="round" />
+        {/* Registration marks */}
+        <line x1="40" y1="2" x2="40" y2="8" stroke="currentColor" strokeWidth="1" className="text-cine-gold/50" />
+        <line x1="40" y1="72" x2="40" y2="78" stroke="currentColor" strokeWidth="1" className="text-cine-gold/50" />
+        <line x1="2" y1="40" x2="8" y2="40" stroke="currentColor" strokeWidth="1" className="text-cine-gold/50" />
+        <line x1="72" y1="40" x2="78" y2="40" stroke="currentColor" strokeWidth="1" className="text-cine-gold/50" />
+      </svg>
+      <span className="font-display text-3xl text-cine-gold font-bold relative z-10">{number}</span>
+    </div>
+    <span className="font-mono text-[9px] text-cine-dust uppercase tracking-widest text-center">{label}</span>
   </div>
 );
 
-
-
-// ── Main Landing ──────────────────────────────────────────────────────────────
 export default function Landing() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll();
   const archY = useSpring(useTransform(scrollY, [0, 600], [0, -80]), { stiffness: 60, damping: 20 });
 
-  const { role } = useAuth();
-  const isLoggedIn = role !== 'AUDIENCE';
-
   const features = [
-    { icon: Wallet, title: 'Budget & Ledger Engine', desc: 'Real-time expense tracking with automated Overrun Triggers and Vendor invoice management.' },
-    { icon: CalendarDays, title: 'Logistics & Schedules', desc: 'Shoot calendar management with database-level protection against location double-booking.' },
-    { icon: FileSignature, title: 'Contracts & Milestones', desc: 'Automated 30/40/30 payment splits with cron-triggered overdue alerts for the Finance team.' },
-    { icon: Network, title: 'Distribution Matrix', desc: 'Box office aggregations and OTT deal tracking backed by immutable Change Data Capture audits.' },
+    { icon: Wallet, title: 'Budget & Ledger Engine', desc: 'Real-time expense tracking with automated overspend alerts and vendor invoice management.' },
+    { icon: CalendarDays, title: 'Logistics & Schedules', desc: 'Seamless shoot calendar management with smart conflict detection to keep every unit on track.' },
+    { icon: FileSignature, title: 'Contracts & Milestones', desc: 'Automated payment milestone splits with overdue alerts for the Finance team.' },
+    { icon: Network, title: 'Distribution Matrix', desc: 'Box office aggregation and OTT deal management with complete change history tracking.' },
+  ];
+
+  const roles = [
+    { icon: ShieldCheck, title: 'Production Admin', desc: 'Greenlight projects, manage studios, oversee the entire portfolio.', color: 'text-cine-gold' },
+    { icon: Users, title: 'Talent Manager', desc: 'Build the roster, sign contracts, manage scripts and crew.', color: 'text-blue-400' },
+    { icon: Wallet, title: 'Finance Manager', desc: 'Track budgets, record expenses, monitor payment milestones.', color: 'text-green-400' },
+    { icon: MapPin, title: 'Production Manager', desc: 'Scout locations, plan schedules, secure shooting permits.', color: 'text-orange-400' },
+    { icon: MonitorPlay, title: 'Distribution Manager', desc: 'Negotiate OTT deals, track box office, manage music catalog.', color: 'text-purple-400' },
+  ];
+
+  const stats = [
+    { value: '17', label: 'Data Entities' },
+    { value: '5', label: 'Role Portals' },
+    { value: '4', label: 'Automation Rules' },
+    { value: '100%', label: 'Audit Coverage' },
   ];
 
   return (
@@ -64,7 +93,7 @@ export default function Landing() {
       <FilmStrip side="left" />
       <FilmStrip side="right" />
 
-      {/* Ambient gold background glow */}
+      {/* Ambient gold glow */}
       <div
         aria-hidden
         className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] opacity-[0.08]"
@@ -85,7 +114,7 @@ export default function Landing() {
         </svg>
       </motion.div>
 
-      {/* Unauthenticated Nav */}
+      {/* Nav */}
       <motion.nav
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -99,10 +128,10 @@ export default function Landing() {
           <span className="font-caption text-sm tracking-cinema text-cine-ivory uppercase font-bold">CineCore</span>
         </div>
 
-
-
         <div className="flex items-center gap-8">
-          
+          <Link to="/dbms" className="font-caption text-xs font-bold tracking-ultra uppercase text-cine-gold hover:text-cine-gold-light transition-colors flex items-center gap-1.5">
+            <Database className="w-3.5 h-3.5" /> DBMS Docs
+          </Link>
           <Link to="/login" className="font-caption text-xs font-bold tracking-ultra uppercase text-cine-void bg-cine-gold border border-cine-gold px-6 py-2 hover:bg-cine-gold-light transition-colors duration-300">
             Staff Login
           </Link>
@@ -111,7 +140,6 @@ export default function Landing() {
 
       {/* Hero Section */}
       <section className="relative z-20 max-w-7xl mx-auto px-8 xl:px-20 pt-28 pb-20">
-
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -120,13 +148,12 @@ export default function Landing() {
         >
           <div className="w-8 h-px bg-cine-gold" />
           <span className="font-caption text-sm tracking-cinema text-cine-gold font-semibold uppercase">
-            Internal Studio Management
+            Film Production & Distribution Management
           </span>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-12 lg:gap-16 items-end mb-16">
           <div>
-            {/* Focus Pull Effect applied to the title */}
             <motion.h1
               initial={{ opacity: 0, y: 40, filter: 'blur(10px)' }}
               animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
@@ -140,8 +167,7 @@ export default function Landing() {
               initial={{ opacity: 0, y: 40, filter: 'blur(10px)' }}
               animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
               transition={{ duration: 1.2, delay: 0.55, ease: [0.22, 1, 0.36, 1] }}
-              className="font-display text-[clamp(4rem,9vw,8rem)] font-bold leading-[1] tracking-tight italic text-transparent"
-              style={{ WebkitTextStroke: '1.5px #B8962E' }}
+              className="font-display text-[clamp(4rem,9vw,8rem)] font-bold leading-[1] tracking-tight italic text-gradient-gold"
             >
               Frame.
             </motion.h1>
@@ -167,22 +193,44 @@ export default function Landing() {
             </p>
 
             <Link
-              to="/portfolio"
+              to="/login"
               className="group relative flex items-center gap-3 px-8 py-4 border border-cine-gold bg-cine-gold/5 text-cine-gold font-caption text-sm font-bold tracking-ultra uppercase hover:bg-cine-gold hover:text-cine-void transition-colors duration-500"
             >
-              <span>View Cinematic Portfolio</span>
+              <Clapperboard className="w-4 h-4" />
+              <span>Enter Production Suite</span>
               <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
             </Link>
           </motion.div>
         </div>
 
         <OrnamentRule className="mb-12" />
-
       </section>
 
-      {/* Features strip mapping to our exact backend */}
-      <section className="relative z-20 max-w-7xl mx-auto px-8 xl:px-20 pb-24 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      {/* Countdown-Style Stats */}
+      <section className="relative z-20 max-w-7xl mx-auto px-8 xl:px-20 pb-20">
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="flex justify-center gap-12 md:gap-20"
+        >
+          {stats.map((stat, i) => (
+            <motion.div
+              key={stat.label}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1, duration: 0.6 }}
+            >
+              <CountdownCircle number={stat.value} label={stat.label} />
+            </motion.div>
+          ))}
+        </motion.div>
+      </section>
 
+      {/* Features */}
+      <section className="relative z-20 max-w-7xl mx-auto px-8 xl:px-20 pb-24 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -190,45 +238,76 @@ export default function Landing() {
         >
           <span className="font-caption text-sm font-bold tracking-ultra text-cine-gold uppercase mb-4 block">System Architecture</span>
           <h2 className="font-display text-4xl md:text-5xl text-cine-ivory font-bold leading-tight mb-6">
-            Built for the <em>reality</em> of production.
+            Built for the <em className="text-gradient-gold">reality</em> of production.
           </h2>
-
-
-          <div className="flex items-center gap-3">
-            <div className="font-mono text-xs text-cine-gold/40 tracking-wider">
-              {['◼', '◼', '◼', '◼', '◻', '◻', '◻', '◻'].map((s, i) => (
-                <span key={i} className="mr-0.5">{s}</span>
-              ))}
-            </div>
-            <span className="font-caption text-xs text-cine-dust tracking-ultra uppercase">Sequence 01 of 04</span>
-          </div>
+          <p className="font-body text-base text-cine-cream leading-relaxed max-w-lg">
+            From the first script draft to a worldwide OTT premiere, CineCore tracks every decision, every payment, and every permit — so your team can focus on making great cinema.
+          </p>
         </motion.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-12">
           {features.map((f, i) => {
             const Icon = f.icon;
             return (
-              <motion.div
-                key={f.title}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 1.2 + i * 0.15, ease: [0.22, 1, 0.36, 1] }}
-                className="group flex flex-col items-start gap-4"
-              >
-                <div className="p-3 border border-cine-border bg-cine-onyx group-hover:border-cine-gold transition-colors duration-500">
-                  <Icon className="w-5 h-5 text-cine-gold" strokeWidth={1.5} />
+              <ScrollReveal key={f.title} delay={i * 0.12}>
+                <div className="group flex flex-col items-start gap-4">
+                  <div className="p-3 border border-cine-border bg-cine-onyx group-hover:border-cine-gold transition-colors duration-500">
+                    <Icon className="w-5 h-5 text-cine-gold" strokeWidth={1.5} />
+                  </div>
+                  <div>
+                    <div className="font-heading text-lg font-bold text-cine-ivory mb-2 group-hover:text-cine-gold transition-colors duration-300">{f.title}</div>
+                    <div className="font-body text-sm text-cine-cream leading-relaxed">{f.desc}</div>
+                  </div>
                 </div>
-                <div>
-                  <div className="font-heading text-lg font-bold text-cine-ivory mb-2">{f.title}</div>
-                  <div className="font-body text-sm text-cine-cream leading-relaxed">{f.desc}</div>
-                </div>
-              </motion.div>
+              </ScrollReveal>
             );
           })}
         </div>
       </section>
 
-      {/* Cinematic Manifesto / Quote */}
+      {/* Roles Section */}
+      <motion.section
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.8 }}
+        className="relative z-20 border-t border-cine-border bg-cine-onyx/40 py-24 overflow-hidden"
+      >
+        <div className="max-w-7xl mx-auto px-8 xl:px-20">
+          <div className="flex items-center gap-4 mb-4">
+            <Film className="w-5 h-5 text-cine-gold" />
+            <span className="font-caption text-sm font-bold tracking-ultra text-cine-gold uppercase">Cast & Crew Access</span>
+          </div>
+          <h2 className="font-display text-4xl md:text-5xl text-cine-ivory font-bold leading-tight mb-4">
+            Five portals. <em className="text-gradient-gold">One production.</em>
+          </h2>
+          <p className="font-body text-base text-cine-cream max-w-2xl mb-12 leading-relaxed">
+            Every role in the production house has a dedicated workspace tailored to their responsibilities — from greenlighting a script to tracking opening weekend collections.
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            {roles.map((role, i) => {
+              const Icon = role.icon;
+              return (
+                <motion.div
+                  key={role.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.08, duration: 0.5 }}
+                  className="bg-cine-void border border-cine-border p-5 hover:border-cine-gold/30 transition-colors group"
+                >
+                  <Icon className={`w-6 h-6 ${role.color} mb-4 group-hover:scale-110 transition-transform`} />
+                  <h4 className="font-heading text-sm font-bold text-cine-ivory mb-2">{role.title}</h4>
+                  <p className="font-body text-xs text-cine-dust leading-relaxed">{role.desc}</p>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+      </motion.section>
+
+      {/* Quote */}
       <motion.section
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
@@ -253,14 +332,50 @@ export default function Landing() {
         </div>
       </motion.section>
 
+      {/* CTA Section */}
+      <section className="relative z-20 py-20 bg-cine-void">
+        <div className="max-w-4xl mx-auto px-8 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <Clapperboard className="w-10 h-10 text-cine-gold mx-auto mb-6" />
+            <h2 className="font-display text-3xl md:text-4xl text-cine-ivory font-bold mb-4">
+              Ready to roll?
+            </h2>
+            <p className="font-body text-base text-cine-cream max-w-lg mx-auto mb-8 leading-relaxed">
+              Log in with your studio credentials to access your personalized production dashboard.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link
+                to="/login"
+                className="group flex items-center gap-3 px-8 py-4 bg-cine-gold text-cine-void font-caption text-sm font-bold tracking-ultra uppercase hover:bg-cine-gold-light transition-colors duration-300"
+              >
+                <span>Staff Login</span>
+                <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Link>
+              <Link
+                to="/dbms"
+                className="group flex items-center gap-3 px-8 py-4 border border-cine-border text-cine-cream font-caption text-sm font-bold tracking-ultra uppercase hover:border-cine-gold hover:text-cine-gold transition-colors duration-300"
+              >
+                <Database className="w-4 h-4" />
+                <span>View DBMS Docs</span>
+              </Link>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Footer */}
-      <footer className="relative z-20 px-8 md:px-20 py-8 flex flex-col md:flex-row items-center justify-between bg-cine-void">
+      <footer className="relative z-20 px-8 md:px-20 py-8 flex flex-col md:flex-row items-center justify-between bg-cine-void border-t border-cine-border/20">
         <span className="font-caption text-xs font-bold tracking-ultra text-cine-dust uppercase mb-4 md:mb-0">
-          © {new Date().getFullYear()} CineCore Systems
+          © {new Date().getFullYear()} CineCore — Film Production & Distribution
         </span>
         <span className="font-mono text-[10px] text-cine-dust uppercase tracking-wider flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-cine-gold/50" />
-          Authorized Studio Personnel Only
+          Every Frame. Every Deal.
         </span>
       </footer>
     </div>

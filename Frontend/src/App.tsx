@@ -19,6 +19,7 @@ import Schedules from './pages/Schedules';
 import Permits from './pages/Permits';
 import Distribution from './pages/Distribution';
 import MusicCatalog from './pages/MusicCatalog';
+import DBMSDocs from './pages/DBMSDocs';
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: false, retry: 1 } },
@@ -50,6 +51,8 @@ function App() {
                 {/* Distribution Manager Pages */}
                 <Route path="/distribution" element={<Distribution />} />
                 <Route path="/music" element={<MusicCatalog />} />
+                {/* DBMS Documentation */}
+                <Route path="/dbms" element={<DBMSDocs />} />
               </Routes>
             </AnimatePresence>
           </Layout>

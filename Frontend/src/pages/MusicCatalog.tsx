@@ -135,9 +135,9 @@ export default function MusicCatalog() {
           <span className="font-mono text-xs tracking-widest text-cine-gold uppercase mb-2 block">
             Distribution Manager
           </span>
-          <h1 className="font-display text-4xl text-cine-ivory">Music Catalog</h1>
+          <h1 className="font-display text-4xl text-gradient-gold">Music Catalog</h1>
           <p className="font-body text-sm text-cine-dust mt-2">
-            Register songs, assign singers by Voice_Type, and manage ISRC codes.
+            Register songs, assign singers, and manage recording metadata.
           </p>
         </div>
         <div className="flex items-center gap-4">
