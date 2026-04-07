@@ -17,6 +17,7 @@ from app.routers import (
     vendors,
     distribution,
     analytics,
+    production
 )
 
 
@@ -57,6 +58,7 @@ app.include_router(songs.router,         prefix=API_PREFIX)
 app.include_router(vendors.router,       prefix=API_PREFIX)
 app.include_router(distribution.router,  prefix=API_PREFIX)
 app.include_router(analytics.router,     prefix=API_PREFIX)
+app.include_router(production.router,    prefix=API_PREFIX)
 
 
 @app.get("/")
