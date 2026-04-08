@@ -35,14 +35,19 @@ function CineTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null;
   return (
     <div className="bg-cine-onyx border border-cine-border p-3 shadow-xl">
-      <p className="font-caption text-[10px] text-cine-gold uppercase tracking-widest mb-1">{label}</p>
-      {payload.map((entry: any, i: number) => (
-        <p key={i} className="font-mono text-xs text-cine-cream">
-          {entry.name}: <span style={{ color: entry.color }} className="font-bold">
-            {typeof entry.value === 'number' ? `₹${(entry.value / 10000000).toFixed(2)} Cr` : entry.value}
-          </span>
-        </p>
-      ))}
+      <p className="font-caption text-[10px] text-cine-gold uppercase tracking-widest mb-1">{label || payload[0].name}</p>
+      {payload.map((entry: any, i: number) => {
+        const isMoney = /budget|spent|total|collection|revenue|fee/i.test(entry.name || '');
+        return (
+          <p key={i} className="font-mono text-xs text-cine-cream">
+            {entry.name}: <span style={{ color: entry.color }} className="font-bold">
+              {isMoney && typeof entry.value === 'number' 
+                ? `₹${(entry.value / 10000000).toFixed(2)} Cr` 
+                : entry.value}
+            </span>
+          </p>
+        );
+      })}
     </div>
   );
 }

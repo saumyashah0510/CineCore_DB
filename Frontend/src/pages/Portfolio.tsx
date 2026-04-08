@@ -77,34 +77,36 @@ export default function Portfolio() {
           {/* 2. Main Content Container */}
           <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center justify-center md:justify-start gap-8 md:gap-16 h-full py-12">
 
-            {/* 3. The Uncropped Poster (Guaranteed to be fully visible) */}
-            <Link to={`/project/${currentFilm.project_id}`} className="shrink-0 group relative mt-12 md:mt-0">
-              <motion.img
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.3, duration: 0.6 }}
-                src={`/posters/project_${currentFilm.project_id}.jpg`}
-                alt={currentFilm.title}
-                // h-[50vh] on mobile, h-[75vh] on desktop ensures it fits the screen
-                className="h-[45vh] md:h-[75vh] w-auto max-w-full object-contain rounded-md shadow-[0_0_50px_rgba(0,0,0,0.6)] group-hover:scale-[1.02] transition-transform duration-500 border border-cine-border/20"
-                onError={(e) => {
-                  e.currentTarget.src = 'https://via.placeholder.com/400x600/111010/d4af37?text=Poster+Coming+Soon';
-                }}
-              />
-            </Link>
+            {/* 3. The Uncropped Poster (Constrained to 50% width) */}
+            <div className="relative group mt-12 md:mt-0 flex-1 md:basis-1/2 flex items-center justify-center md:justify-end overflow-hidden">
+              <Link to={`/project/${currentFilm.project_id}`} className="max-w-full">
+                <motion.img
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.3, duration: 0.6 }}
+                  src={`/posters/project_${currentFilm.project_id}.jpg`}
+                  alt={currentFilm.title}
+                  // Changed from absolute height to max-height for better scaling
+                  className="max-h-[40vh] md:max-h-[70vh] w-auto max-w-full object-contain rounded-md shadow-[0_0_50px_rgba(0,0,0,0.6)] group-hover:scale-[1.02] transition-transform duration-500 border border-cine-border/20"
+                  onError={(e) => {
+                    e.currentTarget.src = 'https://via.placeholder.com/400x600/111010/d4af37?text=Poster+Coming+Soon';
+                  }}
+                />
+              </Link>
+            </div>
 
-            {/* 4. Film Details & Typography */}
+            {/* 4. Film Details & Typography (Occupies remaining 50%) */}
             <motion.div
               initial={{ x: 20, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: 0.5, duration: 0.6 }}
-              className="flex flex-col items-center md:items-start text-center md:text-left max-w-2xl"
+              className="flex-1 md:basis-1/2 flex flex-col items-center md:items-start text-center md:text-left"
             >
               <div className="font-caption text-xs tracking-cinema text-cine-gold uppercase mb-4">
                 {currentFilm.production_house} Presents
               </div>
 
-              <h2 className="font-display text-4xl md:text-7xl lg:text-8xl font-bold text-cine-ivory mb-6 leading-none break-words line-clamp-3 md:line-clamp-2">
+              <h2 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold text-cine-ivory mb-6 leading-tight break-words line-clamp-2">
                 {currentFilm.title}
               </h2>
 
