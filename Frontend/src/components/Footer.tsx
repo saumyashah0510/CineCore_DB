@@ -18,10 +18,12 @@ export default function Footer() {
   return (
     <footer className="w-full bg-cine-void border-t border-cine-border/30 pt-16 pb-8 px-6 mt-auto">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-center md:items-start gap-12 mb-16">
+        
+        {/* Horizontal 3-Column Layout */}
+        <div className="flex flex-row items-center justify-between gap-8 mb-16 w-full">
 
-          {/* Brand & Attribution */}
-          <div className="flex flex-col items-center md:items-start max-w-sm">
+          {/* 1. Brand & Attribution (Left Aligned, takes 1/3 space) */}
+          <div className="flex flex-col items-start flex-1">
             <div className="flex items-center gap-3 mb-4 group cursor-default">
               <div className="w-8 h-8 border border-cine-gold rotate-45 flex items-center justify-center group-hover:bg-cine-gold transition-all duration-500">
                 <Clapperboard className="w-4 h-4 text-cine-gold group-hover:text-cine-void -rotate-45 transition-colors" />
@@ -30,20 +32,20 @@ export default function Footer() {
                 CineCore
               </span>
             </div>
-            <p className="font-body text-xs text-cine-dust leading-relaxed text-center md:text-left">
+            <p className="font-body text-xs text-cine-dust leading-relaxed text-left max-w-[280px]">
               A premium management system for modern cinematic production houses, handling everything from talent to distribution.
             </p>
           </div>
 
-          {/* Cinematic Quote / Signature */}
-          <div className="flex flex-col items-center">
+          {/* 2. Cinematic Quote / Signature (Center Aligned, takes 1/3 space) */}
+          <div className="flex flex-col items-center flex-1">
             <span className="font-caption text-[10px] tracking-ultra text-cine-gold uppercase mb-2">Developed with Passion</span>
-            <span className="font-display text-2xl font-bold text-cine-ivory">{YOUR_NAME}</span>
+            <span className="font-display text-2xl font-bold text-cine-ivory whitespace-nowrap">{YOUR_NAME}</span>
             <div className="w-12 h-px bg-gradient-to-r from-transparent via-cine-gold to-transparent mt-4" />
           </div>
 
-          {/* Social Links */}
-          <div className="flex flex-col items-center md:items-end">
+          {/* 3. Social Links (Right Aligned, takes 1/3 space) */}
+          <div className="flex flex-col items-end flex-1">
             <span className="font-caption text-[10px] tracking-ultra text-cine-dust uppercase mb-6">Connect & Collaborate</span>
             <div className="flex items-center gap-6">
               <SocialIcon
@@ -65,8 +67,8 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="pt-8 border-t border-cine-border/10 flex flex-col md:flex-row justify-between items-center gap-4">
+        {/* Bottom Bar (Strictly Horizontal) */}
+        <div className="pt-8 border-t border-cine-border/10 flex flex-row justify-between items-center w-full">
           <p className="font-mono text-[9px] uppercase tracking-widest text-cine-dust">
             © {currentYear} CineCore Systems. All masterrights reserved.
           </p>
