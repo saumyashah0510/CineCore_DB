@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 from decimal import Decimal
 
 from pydantic import BaseModel, ConfigDict
@@ -77,13 +77,13 @@ class OTTDealAuditResponse(BaseModel):
     audit_id: int
     deal_id: int
     operation: str
-    changed_at: str
-    old_license_fee: Decimal | None
-    new_license_fee: Decimal | None
-    old_territory: str | None
-    new_territory: str | None
-    old_deal_type: str | None
-    new_deal_type: str | None
-    old_expiry_date: str | None
-    new_expiry_date: str | None
+    changed_at: datetime
+    old_license_fee: Decimal | None = None
+    new_license_fee: Decimal | None = None
+    old_territory: str | None = None
+    new_territory: str | None = None
+    old_deal_type: str | None = None
+    new_deal_type: str | None = None
+    old_expiry_date: date | None = None
+    new_expiry_date: date | None = None
     model_config = ConfigDict(from_attributes=True)

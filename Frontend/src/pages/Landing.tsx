@@ -129,7 +129,10 @@ export default function Landing() {
         </div>
 
         <div className="flex items-center gap-8">
-          <Link to="/dbms" className="font-caption text-xs font-bold tracking-ultra uppercase text-cine-gold hover:text-cine-gold-light transition-colors flex items-center gap-1.5">
+          <Link to="/portfolio" className="font-caption text-xs font-bold tracking-ultra uppercase text-cine-dust hover:text-cine-cream transition-colors flex items-center gap-1.5">
+            <Film className="w-3.5 h-3.5" /> Released Films
+          </Link>
+          <Link to="/dbms" className="font-caption text-xs font-bold tracking-ultra uppercase text-cine-dust hover:text-cine-cream transition-colors flex items-center gap-1.5">
             <Database className="w-3.5 h-3.5" /> DBMS Docs
           </Link>
           <Link to="/login" className="font-caption text-xs font-bold tracking-ultra uppercase text-cine-void bg-cine-gold border border-cine-gold px-6 py-2 hover:bg-cine-gold-light transition-colors duration-300">
@@ -186,20 +189,23 @@ export default function Landing() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.9 }}
-            className="flex flex-col items-start lg:items-end gap-8 pb-4"
+            className="flex flex-col items-start lg:items-end gap-4 pb-4"
           >
             <p className="font-body text-base text-cine-cream font-medium leading-relaxed max-w-sm lg:text-right">
               The central nervous system for modern film studios. Role-based access ensures data integrity from the writer's room to worldwide release.
             </p>
 
-            <Link
-              to="/login"
-              className="group relative flex items-center gap-3 px-8 py-4 border border-cine-gold bg-cine-gold/5 text-cine-gold font-caption text-sm font-bold tracking-ultra uppercase hover:bg-cine-gold hover:text-cine-void transition-colors duration-500"
-            >
-              <Clapperboard className="w-4 h-4" />
-              <span>Enter Production Suite</span>
-              <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Link
+                to="/portfolio"
+                className="group relative flex items-center gap-3 px-8 py-4 bg-cine-gold text-cine-void font-caption text-sm font-bold tracking-ultra uppercase hover:bg-cine-gold-light transition-colors duration-500"
+              >
+                <Film className="w-4 h-4" />
+                <span>Browse Released Films</span>
+                <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+              </Link>
+              
+            </div>
           </motion.div>
         </div>
 
@@ -349,19 +355,20 @@ export default function Landing() {
               Log in with your studio credentials to access your personalized production dashboard.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              
               <Link
                 to="/login"
-                className="group flex items-center gap-3 px-8 py-4 bg-cine-gold text-cine-void font-caption text-sm font-bold tracking-ultra uppercase hover:bg-cine-gold-light transition-colors duration-300"
+                className="group flex items-center gap-3 px-8 py-4 border border-cine-border text-cine-cream font-caption text-sm font-bold tracking-ultra uppercase hover:border-cine-gold hover:text-cine-gold transition-colors duration-300"
               >
+                <Clapperboard className="w-4 h-4" />
                 <span>Staff Login</span>
-                <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link
                 to="/dbms"
                 className="group flex items-center gap-3 px-8 py-4 border border-cine-border text-cine-cream font-caption text-sm font-bold tracking-ultra uppercase hover:border-cine-gold hover:text-cine-gold transition-colors duration-300"
               >
                 <Database className="w-4 h-4" />
-                <span>View DBMS Docs</span>
+                <span>DBMS Docs</span>
               </Link>
             </div>
           </motion.div>

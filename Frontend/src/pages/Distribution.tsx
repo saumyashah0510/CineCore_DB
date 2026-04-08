@@ -60,7 +60,7 @@ export default function Distribution() {
     enabled: !!selectedProject && activeTab === 'theatre',
   });
 
-  const { data: auditLog } = useQuery({
+  const { data: auditLog, isLoading: auditLoading, isError: auditError } = useQuery({
     queryKey: ['audit', auditDealId],
     queryFn: async () => (await api.get(`/distribution/deals/${auditDealId}/audit`)).data,
     enabled: !!auditDealId,
@@ -300,16 +300,25 @@ export default function Distribution() {
                   </div>
 
                   {/* Inline Audit Log */}
-                  {auditDealId === deal.deal_id && auditLog && (
+                  {auditDealId === deal.deal_id && (
                     <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="mt-4 border-t border-cine-border pt-4">
                       <h4 className="font-caption text-xs tracking-widest text-cine-dust uppercase mb-3 flex items-center gap-2">
                         <History className="w-3.5 h-3.5" /> Deal Change History
                       </h4>
-                      {auditLog.length === 0 ? (
-                        <p className="font-mono text-xs text-cine-dust">No audit entries.</p>
+                      {auditLoading ? (
+                        <div className="flex items-center gap-3 p-3">
+                          <div className="w-4 h-4 border-2 border-cine-gold border-t-transparent rounded-full animate-spin" />
+                          <span className="font-mono text-xs text-cine-dust">Loading audit log...</span>
+                        </div>
+                      ) : auditError ? (
+                        <p className="font-mono text-xs text-red-400 p-3 bg-red-400/5 border border-red-400/20">
+                          Failed to load audit log. Make sure the backend server is running.
+                        </p>
+                      ) : auditLog?.length === 0 ? (
+                        <p className="font-mono text-xs text-cine-dust">No audit entries yet. Changes to this deal will be logged automatically.</p>
                       ) : (
                         <div className="space-y-2">
-                          {auditLog.map((entry: any) => (
+                          {auditLog?.map((entry: any) => (
                             <div key={entry.audit_id} className="flex items-center gap-4 font-mono text-[10px] text-cine-cream bg-cine-void p-3 border border-cine-border">
                               <span className={`px-2 py-0.5 uppercase tracking-widest ${
                                 entry.operation === 'INSERT' ? 'text-green-400' : entry.operation === 'UPDATE' ? 'text-blue-400' : 'text-red-400'

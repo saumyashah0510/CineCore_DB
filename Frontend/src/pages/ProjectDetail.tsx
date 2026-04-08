@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, PlayCircle, Users, Music, MonitorPlay, Film } from 'lucide-react';
+import { ChevronLeft, Users, Music, MonitorPlay, Film } from 'lucide-react';
 import { api } from '../lib/api';
 
 // ── API Fetchers ─────────────────────────────────────────────────────────────
@@ -102,9 +102,6 @@ export default function ProjectDetail() {
               )}
             </div>
 
-            <button className="flex items-center gap-3 bg-cine-gold text-cine-void px-8 py-3.5 font-caption text-sm font-bold tracking-ultra uppercase hover:bg-cine-gold-light transition-colors">
-              <PlayCircle className="w-5 h-5" /> Play Trailer
-            </button>
           </motion.div>
         </div>
       </div>
@@ -170,9 +167,9 @@ export default function ProjectDetail() {
                     <div key={song.song_id} className="flex items-center justify-between p-4 border border-cine-border bg-cine-onyx hover:border-cine-gold/50 transition-colors group">
                       <div className="flex items-center gap-6">
                         <span className="font-mono text-cine-dust text-sm">{(idx + 1).toString().padStart(2, '0')}</span>
-                        <button className="text-cine-gold opacity-50 group-hover:opacity-100 transition-opacity">
-                          <PlayCircle className="w-8 h-8" />
-                        </button>
+                        <div className="text-cine-gold opacity-50 group-hover:opacity-100 transition-opacity">
+                          <Music className="w-6 h-6" />
+                        </div>
                         <div>
                           <h4 className="font-display text-xl text-cine-ivory">{song.title}</h4>
                           <p className="font-mono text-[10px] text-cine-dust uppercase tracking-wider mt-1">

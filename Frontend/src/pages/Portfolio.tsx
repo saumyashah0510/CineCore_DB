@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
-import { PlayCircle, Info } from 'lucide-react';
+import { Info } from 'lucide-react';
 import { api } from '../lib/api';
 import { Link } from 'react-router-dom';
 
@@ -114,9 +114,6 @@ export default function Portfolio() {
               </div>
 
               <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
-                <button className="w-full sm:w-auto flex items-center justify-center gap-3 bg-cine-gold text-cine-void px-8 py-4 font-caption text-sm font-bold tracking-ultra uppercase hover:bg-cine-gold-light transition-colors">
-                  <PlayCircle className="w-5 h-5" /> Watch Trailer
-                </button>
                 <Link to={`/project/${currentFilm.project_id}`} className="w-full sm:w-auto">
                   <button className="w-full flex items-center justify-center gap-3 border border-cine-border bg-cine-onyx/30 backdrop-blur-md text-cine-ivory px-8 py-4 font-caption text-sm tracking-ultra uppercase hover:border-cine-gold transition-colors">
                     <Info className="w-5 h-5 text-cine-gold" /> Details
