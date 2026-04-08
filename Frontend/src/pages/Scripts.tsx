@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Plus, BookOpen, Clock, Trash2, X, CheckCircle, XCircle } from 'lucide-react';
 import { api } from '../lib/api';
+import { PageSkeleton } from '../components/CinematicEffects';
 
 // ── API Fetchers ─────────────────────────────────────────────────────────────
 const fetchAllScripts = async () => {
@@ -104,11 +105,7 @@ export default function Scripts() {
   };
 
   if (scriptsLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-10 h-10 border-2 border-cine-gold border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
+    return <PageSkeleton />;
   }
 
   const filteredScripts = scripts?.filter((s: any) => 

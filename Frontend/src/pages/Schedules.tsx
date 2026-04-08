@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, Plus, X, Clock, Film, ChevronDown } from 'lucide-react';
 import { api } from '../lib/api';
+import { TableSkeleton } from '../components/CinematicEffects';
 
 const statusColors: Record<string, string> = {
   PLANNED: 'text-blue-400 bg-blue-400/10 border-blue-400/20',
@@ -154,9 +155,7 @@ export default function Schedules() {
           </div>
 
           {isLoading ? (
-            <div className="p-8 text-center">
-              <div className="w-8 h-8 border-2 border-cine-gold border-t-transparent rounded-full animate-spin mx-auto" />
-            </div>
+            <TableSkeleton />
           ) : schedules?.length === 0 ? (
             <div className="p-8 text-center font-mono text-xs text-cine-dust uppercase">
               No schedules found for this project.

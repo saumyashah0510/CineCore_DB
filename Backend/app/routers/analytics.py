@@ -195,3 +195,18 @@ async def get_shoot_calendar(db: AsyncSession = Depends(get_db)):
         ORDER BY ss.schedule_date, ss.call_time
     """))
     return [dict(r) for r in result.mappings().all()]
+
+@router.get("/contract-summary")
+async def get_contract_summary(db: AsyncSession = Depends(get_db)):
+    """
+    Groups contracts by status for the Talent Manager dashboard.
+    """
+    result = await db.execute(text("""
+        SELECT
+            status,
+            COUNT(*) as count
+        FROM cinecore.contract
+        GROUP BY status
+    """))
+    return [dict(r) for r in result.mappings().all()]
+

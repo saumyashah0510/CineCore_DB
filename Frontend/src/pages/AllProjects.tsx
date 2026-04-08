@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Plus, Clapperboard, ArrowUpRight, X, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { api } from '../lib/api';
+import { PageSkeleton } from '../components/CinematicEffects';
 
 const fetchAllProjects = async () => {
   const { data } = await api.get('/projects/');
@@ -100,11 +101,7 @@ export default function AllProjects() {
   };
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-10 h-10 border-2 border-cine-gold border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
+    return <PageSkeleton />;
   }
 
   const filteredProjects = projects?.filter((p: any) => 

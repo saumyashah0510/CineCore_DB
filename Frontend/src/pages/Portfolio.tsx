@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Info } from 'lucide-react';
 import { api } from '../lib/api';
 import { Link } from 'react-router-dom';
+import { PageSkeleton } from '../components/CinematicEffects';
 
 const fetchProjects = async () => {
   const { data } = await api.get('/projects/');
@@ -25,18 +26,18 @@ export default function Portfolio() {
   // Auto-scroll logic: Changes the slide every 5 seconds
   useEffect(() => {
     if (releasedFilms.length <= 1) return;
-    
+
     const timer = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % releasedFilms.length);
     }, 5000); // 5000ms = 5 seconds
-    
+
     return () => clearInterval(timer);
   }, [releasedFilms.length]);
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-cine-void flex items-center justify-center">
-        <div className="w-12 h-12 border-2 border-cine-gold border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-cine-void">
+        <PageSkeleton />
       </div>
     );
   }
@@ -75,7 +76,7 @@ export default function Portfolio() {
 
           {/* 2. Main Content Container */}
           <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center justify-center md:justify-start gap-8 md:gap-16 h-full py-12">
-            
+
             {/* 3. The Uncropped Poster (Guaranteed to be fully visible) */}
             <Link to={`/project/${currentFilm.project_id}`} className="shrink-0 group relative mt-12 md:mt-0">
               <motion.img
@@ -93,7 +94,7 @@ export default function Portfolio() {
             </Link>
 
             {/* 4. Film Details & Typography */}
-            <motion.div 
+            <motion.div
               initial={{ x: 20, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: 0.5, duration: 0.6 }}
@@ -103,7 +104,7 @@ export default function Portfolio() {
                 {currentFilm.production_house} Presents
               </div>
 
-              <h2 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold text-cine-ivory mb-6 leading-none">
+              <h2 className="font-display text-4xl md:text-7xl lg:text-8xl font-bold text-cine-ivory mb-6 leading-none break-words line-clamp-3 md:line-clamp-2">
                 {currentFilm.title}
               </h2>
 
@@ -128,15 +129,14 @@ export default function Portfolio() {
 
       {/* 5. Progress Indicator Dots (Optional but good for UX) */}
       <div className="absolute bottom-8 left-0 right-0 flex justify-center gap-3 z-20">
-        {releasedFilms.map((_, idx) => (
+        {releasedFilms.map((_: any, idx: number) => (
           <button
             key={idx}
             onClick={() => setCurrentIndex(idx)}
-            className={`transition-all duration-500 rounded-full ${
-              idx === currentIndex 
-                ? 'w-8 h-1.5 bg-cine-gold' 
+            className={`transition-all duration-500 rounded-full ${idx === currentIndex
+                ? 'w-8 h-1.5 bg-cine-gold'
                 : 'w-2 h-1.5 bg-cine-border/50 hover:bg-cine-ivory/50'
-            }`}
+              }`}
             aria-label={`Go to slide ${idx + 1}`}
           />
         ))}

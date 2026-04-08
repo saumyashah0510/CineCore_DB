@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Music, Plus, X, Film, ChevronDown, ChevronRight, Mic2, Trash2, Clock, Disc3 } from 'lucide-react';
 import { api } from '../lib/api';
+import { TableSkeleton } from '../components/CinematicEffects';
 
 const voiceTypeColors: Record<string, string> = {
   LEAD_MALE: 'text-blue-400 bg-blue-400/10 border-blue-400/20',
@@ -181,9 +182,7 @@ export default function MusicCatalog() {
       {selectedProject && (
         <div className="space-y-4">
           {isLoading ? (
-            <div className="p-8 text-center">
-              <div className="w-8 h-8 border-2 border-cine-gold border-t-transparent rounded-full animate-spin mx-auto" />
-            </div>
+            <TableSkeleton />
           ) : songs?.length === 0 ? (
             <div className="bg-cine-onyx border border-cine-border p-8 text-center font-mono text-xs text-cine-dust uppercase">
               No songs registered for this project.

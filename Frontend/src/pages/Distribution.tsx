@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MonitorPlay, Plus, X, Film, ChevronDown, Trash2, History, Landmark, Tv } from 'lucide-react';
 import { api } from '../lib/api';
+import { TableSkeleton, Skeleton } from '../components/CinematicEffects';
 
 const dealTypeColors: Record<string, string> = {
   EXCLUSIVE: 'text-purple-400 bg-purple-400/10 border-purple-400/20',
@@ -236,7 +237,7 @@ export default function Distribution() {
           </div>
 
           {dealsLoading ? (
-            <div className="p-8 text-center"><div className="w-8 h-8 border-2 border-cine-gold border-t-transparent rounded-full animate-spin mx-auto" /></div>
+            <TableSkeleton />
           ) : deals?.length === 0 ? (
             <div className="bg-cine-onyx border border-cine-border p-8 text-center font-mono text-xs text-cine-dust uppercase">No OTT deals for this project.</div>
           ) : (
@@ -306,9 +307,9 @@ export default function Distribution() {
                         <History className="w-3.5 h-3.5" /> Deal Change History
                       </h4>
                       {auditLoading ? (
-                        <div className="flex items-center gap-3 p-3">
-                          <div className="w-4 h-4 border-2 border-cine-gold border-t-transparent rounded-full animate-spin" />
-                          <span className="font-mono text-xs text-cine-dust">Loading audit log...</span>
+                        <div className="space-y-2 p-3">
+                          <Skeleton className="h-4 w-full" />
+                          <Skeleton className="h-4 w-3/4" />
                         </div>
                       ) : auditError ? (
                         <p className="font-mono text-xs text-red-400 p-3 bg-red-400/5 border border-red-400/20">
@@ -353,7 +354,7 @@ export default function Distribution() {
           </div>
 
           {theatreLoading ? (
-            <div className="p-8 text-center"><div className="w-8 h-8 border-2 border-cine-gold border-t-transparent rounded-full animate-spin mx-auto" /></div>
+            <TableSkeleton />
           ) : theatreReleases?.length === 0 ? (
             <div className="bg-cine-onyx border border-cine-border p-8 text-center font-mono text-xs text-cine-dust uppercase">No theatre releases for this project.</div>
           ) : (

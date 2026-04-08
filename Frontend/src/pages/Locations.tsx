@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Plus, Search, X, Building2, TreePine, Plane } from 'lucide-react';
 import { api } from '../lib/api';
+import { PageSkeleton } from '../components/CinematicEffects';
 
 const typeIcons: Record<string, any> = {
   INDOOR_SET: Building2,
@@ -80,11 +81,7 @@ export default function Locations() {
   }) || [];
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-10 h-10 border-2 border-cine-gold border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
+    return <PageSkeleton />;
   }
 
   return (

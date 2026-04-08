@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShieldCheck, Plus, X, ChevronDown, Film, AlertCircle, CheckCircle2, XCircle, Clock4 } from 'lucide-react';
 import { api } from '../lib/api';
+import { TableSkeleton } from '../components/CinematicEffects';
 
 const statusConfig: Record<string, { color: string; icon: any }> = {
   APPLIED: { color: 'text-blue-400 bg-blue-400/10 border-blue-400/20', icon: Clock4 },
@@ -158,9 +159,7 @@ export default function Permits() {
       {selectedProject && (
         <div className="space-y-4">
           {isLoading ? (
-            <div className="p-8 text-center">
-              <div className="w-8 h-8 border-2 border-cine-gold border-t-transparent rounded-full animate-spin mx-auto" />
-            </div>
+            <TableSkeleton />
           ) : permits?.length === 0 ? (
             <div className="bg-cine-onyx border border-cine-border p-8 text-center font-mono text-xs text-cine-dust uppercase">
               No permits filed for this project.

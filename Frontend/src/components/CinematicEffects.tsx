@@ -270,3 +270,46 @@ export function FrameCounter() {
     </span>
   );
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   11. LOADING SKELETONS
+   ═══════════════════════════════════════════════════════════════ */
+export function Skeleton({ className = '', style }: { className?: string, style?: React.CSSProperties }) {
+  return <div className={`animate-pulse bg-cine-border/30 rounded ${className}`} style={style} />;
+}
+
+export function SkeletonCard() {
+  return (
+    <div className="bg-cine-onyx border border-cine-border p-6 w-full">
+      <Skeleton className="h-4 w-24 mb-4" />
+      <Skeleton className="h-10 w-32 mb-2" />
+      <Skeleton className="h-2 w-20" />
+    </div>
+  );
+}
+
+export function PageSkeleton() {
+  return (
+    <div className="max-w-7xl mx-auto px-6 py-12 w-full">
+      <div className="mb-10">
+        <Skeleton className="h-4 w-32 mb-2" />
+        <Skeleton className="h-10 w-64" />
+      </div>
+      <div className="space-y-4">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <Skeleton key={i} className="h-24 w-full" />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function TableSkeleton() {
+  return (
+    <div className="p-4 space-y-3">
+      {Array.from({ length: 4 }).map((_, i) => (
+        <Skeleton key={i} className="h-16 w-full" />
+      ))}
+    </div>
+  );
+}

@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, Users, Music, MonitorPlay, Film } from 'lucide-react';
 import { api } from '../lib/api';
+import { PageSkeleton } from '../components/CinematicEffects';
 
 // ── API Fetchers ─────────────────────────────────────────────────────────────
 const fetchProjectData = async (id: string) => {
@@ -31,8 +32,8 @@ export default function ProjectDetail() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-cine-void flex items-center justify-center">
-        <div className="w-12 h-12 border-2 border-cine-gold border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-cine-void">
+        <PageSkeleton />
       </div>
     );
   }
