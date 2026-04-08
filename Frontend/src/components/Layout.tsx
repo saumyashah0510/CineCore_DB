@@ -4,6 +4,7 @@ import { User, LogOut, Database } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { CustomCursor } from './CinematicEffects';
+import Footer from './Footer';
 
 // STRICT MAPPING BASED ON SCENARIOS DOC
 const NAV_LINKS = {
@@ -164,6 +165,8 @@ export default function Layout({ children }: { children: ReactNode }) {
       <main className="flex-1 flex flex-col relative z-10">
         {children}
       </main>
+
+      <Footer />
     </div>
   );
 }
