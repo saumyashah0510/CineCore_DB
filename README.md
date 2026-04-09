@@ -1,50 +1,96 @@
+<div align="center">
+  
 
-# cinecore/
+  # CineCore DB
+  ### All-in-one Movie Production Tool
 
-│
-├── backend/
-│   ├── .env.example                      # Template — copy to .env and fill credentials
-│   ├── requirements.txt                  # All Python dependencies
-│   ├── run.py                            # Entry point: python run.py
-│   │
-│   └── app/
-│       ├── __init__.py
-│       ├── main.py                       # FastAPI app, CORS, router registration, lifespan
-│       ├── config.py                     # Reads .env → typed Settings object
-│       ├── database.py                   # Async SQLAlchemy engine + get_db() dependency
-│       ├── redis_client.py               # Redis connection + cache_get/set/delete helpers
-│       ├── dependencies.py               # Shared deps: get_redis(), require_role()
-│       │
-│       ├── models/                       # SQLAlchemy ORM — maps Python classes to DB tables
-│       │   ├── __init__.py
-│       │   ├── production_house.py       # ProductionHouse
-│       │   ├── project.py                # Project
-│       │   ├── person.py                 # Person
-│       │   ├── contract.py               # Contract, PaymentMilestone, BudgetHead, Expense
-│       │   ├── song.py                   # Song, ProductionVendor
-│       │   └── distribution.py           # OTTPlatform, OTTDeal, TheatreRelease
-│       │
-│       ├── schemas/                      # Pydantic — defines API request/response shapes
-│       │   ├── __init__.py
-│       │   └── project.py                # All schemas: Project, Contract, Expense, Person,
-│       │                                 # PersonCreate, Analytics responses etc.
-│       │
-│       └── routers/                      # One file per domain — actual API endpoints
-│           ├── __init__.py
-│           ├── projects.py               # GET/POST /projects, /projects/{id}/budget
-│           ├── contracts.py              # GET/POST /contracts, milestones
-│           ├── expenses.py               # POST /expenses, PATCH approve
-│           ├── persons.py                # GET/POST /persons, person contracts
-│           └── analytics.py             # /analytics/dashboard, box-office, OTT, overdue
-│
-└── db/                                   # All SQL scripts (already done)
-    ├── 01_stored_procedures.sql
-    ├── 02_triggers.sql
-    ├── insert_01_houses_and_people.sql
-    ├── insert_02_projects_via_procedure.sql
-    ├── insert_03_scripts_and_status_updates.sql
-    ├── insert_04_contracts_via_procedure.sql
-    ├── insert_05_locations_schedules_permits.sql
-    ├── insert_06_expenses_trigger_test.sql
-    ├── insert_06b_overspend_test.sql
-    └── insert_07_songs_ott_theatre_finalize.sql
+  [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+  [![Python: 3.10+](https://img.shields.io/badge/Python-3.10+-3776AB.svg)](https://www.python.org/)
+  [![FastAPI: 0.100+](https://img.shields.io/badge/FastAPI-0.100+-009688.svg)](https://fastapi.tiangolo.com/)
+  [![React: 18+](https://img.shields.io/badge/React-18+-61DAFB.svg)](https://reactjs.org/)
+  [![Redis: Caching](https://img.shields.io/badge/Redis-Caching-D82C20.svg)](https://redis.io/)
+
+  **A fast and powerful system to manage movie production and sales.**
+</div>
+
+---
+
+## What is CineCore DB?
+
+CineCore DB is a complete tool for movie production houses. It helps you manage everything from the first script to the final movie sale.
+
+### How the system works
+
+<div align="center">
+  <img src="./docs/images/architecture.png" width="80%" alt="System Architecture">
+</div>
+
+---
+
+## Main Features
+
+### 1. Movie Management
+*   **Track Progress**: See which stage your movie is in (Pre-production, Shooting, or Finished).
+*   **Scripts and Files**: Keep all your scripts and production notes in one place.
+
+### 2. Money and Contracts
+*   **Contracts**: Manage deals for actors, crew, and vendors easily.
+*   **Budget and Costs**: Track how much you spend and get alerts if you go over budget.
+*   **Payments**: Set up and track payment dates as the movie progress.
+
+### 3. People and Locations
+*   **Talent Database**: A full list of actors and crew with their details and past work.
+*   **Shoot Planning**: Manage filming locations, daily schedules, and government permits.
+
+### 4. Sales and Reports
+*   **Deal Tracking**: Keep track of sales to Netflix, Prime, and theaters.
+*   **Dashboard**: A single page to see your profit, costs, and performance.
+
+---
+
+## System Speed
+
+CineCore DB is built to be very fast:
+
+*   **Fast Loading**: We use Redis to remember common data, so the app loads quickly even when busy.
+*   **Smart Background Work**: The system can do many things at once without slowing down.
+*   **Data Safety**: The database handles the important rules to make sure your data is always correct.
+
+---
+
+## How to Set Up
+
+### What you need
+*   Python 3.10 or higher
+*   Node.js 18 or higher
+*   PostgreSQL 14 or higher
+*   Redis 6 or higher
+
+### 1. Set up the Backend
+```bash
+cd Backend
+python -m venv venv
+source venv/bin/activate  # On Windows use: venv\Scripts\activate
+pip install -r requirements.txt
+cp .env.example .env      # Fill in your database details
+python run.py
+```
+
+### 2. Set up the Database
+Run the scripts in the `DBMS/` folder in this order:
+1. `01_stored_procedures.sql`
+2. `02_triggers.sql`
+3. All the data scripts from `insert_01` to `insert_07`.
+
+### 3. Set up the Frontend
+```bash
+cd Frontend
+npm install
+npm run dev
+```
+
+---
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
