@@ -70,9 +70,8 @@ CineCore DB is built to be very fast:
 ```bash
 cd Backend
 python -m venv venv
-source venv/bin/activate  # On Windows use: venv\Scripts\activate
+source venv\Scripts\activate  # On Mac OS use: venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env      # Fill in your database details
 python run.py
 ```
 
