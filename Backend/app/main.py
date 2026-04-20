@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
+import os
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.redis_client import init_redis, close_redis
@@ -38,10 +39,24 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+from app.config import settings
+
+@app.middleware("http")
+async def demo_mode_middleware(request: Request, call_next):
+    if settings.DEMO_MODE and request.method in ["POST", "PUT", "DELETE", "PATCH"]:
+        superadmin_key = request.headers.get("X-Superadmin-Key", "")
+        if superadmin_key != settings.SUPERADMIN_KEY:
+            return Response(
+                content='{"detail": "Action disabled in demo mode. Database is read-only."}',
+                status_code=403,
+                media_type="application/json"
+            )
+    response = await call_next(request)
+    return response
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3000"],
-    allow_credentials=True,
+    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )

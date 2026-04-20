@@ -40,25 +40,7 @@ const OrnamentRule = ({ className = '' }: { className?: string }) => (
   </div>
 );
 
-// ── Film countdown circle ──
-const CountdownCircle = ({ number, label }: { number: string; label: string }) => (
-  <div className="flex flex-col items-center gap-3">
-    <div className="relative w-20 h-20 flex items-center justify-center">
-      <svg className="absolute inset-0 w-full h-full" viewBox="0 0 80 80">
-        <circle cx="40" cy="40" r="36" fill="none" stroke="currentColor" strokeWidth="1" className="text-cine-border" />
-        <circle cx="40" cy="40" r="36" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-cine-gold/40"
-          strokeDasharray="226" strokeDashoffset="56" strokeLinecap="round" />
-        {/* Registration marks */}
-        <line x1="40" y1="2" x2="40" y2="8" stroke="currentColor" strokeWidth="1" className="text-cine-gold/50" />
-        <line x1="40" y1="72" x2="40" y2="78" stroke="currentColor" strokeWidth="1" className="text-cine-gold/50" />
-        <line x1="2" y1="40" x2="8" y2="40" stroke="currentColor" strokeWidth="1" className="text-cine-gold/50" />
-        <line x1="72" y1="40" x2="78" y2="40" stroke="currentColor" strokeWidth="1" className="text-cine-gold/50" />
-      </svg>
-      <span className="font-display text-3xl text-cine-gold font-bold relative z-10">{number}</span>
-    </div>
-    <span className="font-mono text-[9px] text-cine-dust uppercase tracking-widest text-center">{label}</span>
-  </div>
-);
+
 
 export default function Landing() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -135,8 +117,11 @@ export default function Landing() {
           <Link to="/dbms" className="font-caption text-xs font-bold tracking-ultra uppercase text-cine-dust hover:text-cine-cream transition-colors flex items-center gap-1.5">
             <Database className="w-3.5 h-3.5" /> DBMS Docs
           </Link>
+          
+          <div className="h-4 w-px bg-cine-border/50 hidden md:block" />
+
           <Link to="/login" className="font-caption text-xs font-bold tracking-ultra uppercase text-cine-void bg-cine-gold border border-cine-gold px-6 py-2 hover:bg-cine-gold-light transition-colors duration-300">
-            Staff Login
+            {localStorage.getItem('cinecore_superadmin') ? 'Manage Portal (Unlocked)' : 'Staff Login'}
           </Link>
         </div>
       </motion.nav>
@@ -212,27 +197,31 @@ export default function Landing() {
         <OrnamentRule className="mb-12" />
       </section>
 
-      {/* Countdown-Style Stats */}
+      {/* Sleek Stats Section */}
       <section className="relative z-20 max-w-7xl mx-auto px-8 xl:px-20 pb-20">
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="flex justify-center gap-12 md:gap-20"
-        >
-          {stats.map((stat, i) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1, duration: 0.6 }}
-            >
-              <CountdownCircle number={stat.value} label={stat.label} />
-            </motion.div>
-          ))}
-        </motion.div>
+        <div className="border-y border-cine-border/40 bg-cine-onyx/10 py-16">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-12 md:gap-0 md:divide-x divide-cine-border/50">
+            {stats.map((stat, i) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                className="flex flex-col items-center justify-center text-center group"
+              >
+                <div className="font-display text-5xl md:text-6xl text-cine-ivory font-bold mb-3 tracking-tighter group-hover:text-cine-gold transition-colors duration-500">
+                  {stat.value}
+                </div>
+                <div className="font-caption text-[10px] md:text-xs text-cine-dust uppercase tracking-widest font-semibold flex items-center gap-2">
+                  <div className="w-2 h-[1px] bg-cine-gold/50" />
+                  {stat.label}
+                  <div className="w-2 h-[1px] bg-cine-gold/50" />
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* Features */}

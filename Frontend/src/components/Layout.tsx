@@ -1,6 +1,7 @@
+import { useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { User, LogOut, Database } from 'lucide-react';
+import { User, LogOut, Database, Lock, Unlock } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { CustomCursor } from './CinematicEffects';
@@ -46,9 +47,30 @@ export default function Layout({ children }: { children: ReactNode }) {
 
   const currentLinks = isAudience ? [] : NAV_LINKS[role as keyof typeof NAV_LINKS] || [];
 
+  const [isSuperadmin, setIsSuperadmin] = useState(() => {
+    return !!localStorage.getItem('cinecore_superadmin');
+  });
+
+  useEffect(() => {
+    const handleStorageChange = () => setIsSuperadmin(!!localStorage.getItem('cinecore_superadmin'));
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('superadmin_changed', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('superadmin_changed', handleStorageChange);
+    };
+  }, []);
+
   const handleSignOut = () => {
     logout();
     navigate('/');
+  };
+
+  const handleSuperadminLogout = () => {
+    localStorage.removeItem('cinecore_superadmin');
+    setIsSuperadmin(false);
+    window.dispatchEvent(new Event('superadmin_changed'));
+    alert('Database Locked.');
   };
 
   return (
@@ -136,6 +158,19 @@ export default function Layout({ children }: { children: ReactNode }) {
 
               {/* Right side */}
               <div className="flex items-center gap-4">
+                
+                {isSuperadmin ? (
+                  <button onClick={handleSuperadminLogout} className="hidden lg:flex items-center gap-2 px-3 py-1 border border-green-500/50 bg-green-500/10 hover:bg-green-500/20 transition-colors text-green-400" title="Click to lock database">
+                    <Unlock className="w-3.5 h-3.5" />
+                    <span className="font-mono text-[9px] tracking-widest uppercase">DB Unlocked</span>
+                  </button>
+                ) : (
+                  <div className="hidden lg:flex items-center gap-2 px-3 py-1 border border-cine-border bg-cine-void text-cine-dust" title="Database is read-only (Demo Mode)">
+                    <Lock className="w-3.5 h-3.5" />
+                    <span className="font-mono text-[9px] tracking-widest uppercase">DB Locked</span>
+                  </div>
+                )}
+
                 {!isAudience && (
                   <div className="hidden lg:flex items-center gap-2 px-3 py-1 border border-cine-border">
                     <div className="w-1.5 h-1.5 rounded-full bg-cine-gold" />

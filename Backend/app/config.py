@@ -17,6 +17,10 @@ class Settings(BaseSettings):
     # App
     APP_ENV: str = "development"
     SECRET_KEY: str = "dev-secret-key-change-in-production"
+    
+    # Portfolio Demo
+    DEMO_MODE: bool = True
+    SUPERADMIN_KEY: str = "SUPERADMIN_SECRET"
 
     # Computed properties — build URLs from the individual parts above
     @property
