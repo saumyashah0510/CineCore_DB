@@ -15,7 +15,7 @@ const NAV_LINKS = {
   ],
   TALENT_MANAGER: [
     { label: 'Dashboard', path: '/dashboard' },
-    { label: 'Talent Registry', path: '/talent' },
+    { label: 'Registry', path: '/talent' },
     { label: 'Contracts', path: '/contracts' },
     { label: 'Scripts', path: '/scripts' }
   ],
@@ -158,7 +158,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 
               {/* Right side */}
               <div className="flex items-center gap-4">
-                
+
                 {isSuperadmin ? (
                   <button onClick={handleSuperadminLogout} className="hidden lg:flex items-center gap-2 px-3 py-1 border border-green-500/50 bg-green-500/10 hover:bg-green-500/20 transition-colors text-green-400" title="Click to lock database">
                     <Unlock className="w-3.5 h-3.5" />
