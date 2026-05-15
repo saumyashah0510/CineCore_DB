@@ -171,9 +171,16 @@ async def ai_query(request: AIQueryRequest):
             columns = list(result.keys())
             rows = [list(row) for row in result.fetchall()]
     except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Query execution failed: {str(e)[:300]}"
+        # Log the error for backend developers
+        print(f"[AI Query Error] {str(e)}")
+        # Return a friendly conversational error to the user instead of a massive crash dump
+        return AIQueryResponse(
+            question=question,
+            sql=safe_sql,
+            columns=[],
+            rows=[],
+            summary="I hit a snag trying to calculate that. My generated database query contained an error. Try asking in a slightly different way!",
+            row_count=0,
         )
 
     # ── Step 5: Ask Groq for a plain-English summary of the results ───────────
