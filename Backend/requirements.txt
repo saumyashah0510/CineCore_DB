@@ -10,11 +10,12 @@ asyncpg==0.30.0                  # Async PostgreSQL driver (faster than psycopg2
 redis==5.2.0                     # redis-py with async support built in
 
 # Settings / environment
+pydantic==2.10.2
+pydantic-core==2.27.2            # pinned: matches pydantic 2.10.2
 pydantic-settings==2.6.1         # Reads .env file into a config class
 python-dotenv==1.0.1
 
 # Data validation (comes with FastAPI but pin the version)
-pydantic==2.10.2
 
 # CORS, JSON
 python-multipart==0.0.17         # For form data in requests
