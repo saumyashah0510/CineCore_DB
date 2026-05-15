@@ -11,7 +11,7 @@ redis==5.2.0                     # redis-py with async support built in
 
 # Settings / environment
 pydantic==2.10.2
-pydantic-core==2.27.2            # pinned: matches pydantic 2.10.2
+pydantic-core==2.27.1            # pinned: exact match for pydantic 2.10.2
 pydantic-settings==2.6.1         # Reads .env file into a config class
 python-dotenv==1.0.1
 
