@@ -7,6 +7,7 @@ import { useAuth } from '../context/AuthContext';
 import { CustomCursor } from './CinematicEffects';
 import Footer from './Footer';
 import GlobalSearch from './GlobalSearch';
+import AIChatWidget from './AIChatWidget';
 
 // STRICT MAPPING BASED ON SCENARIOS DOC
 const NAV_LINKS = {
@@ -241,6 +242,9 @@ export default function Layout({ children }: { children: ReactNode }) {
 
       {/* Global Search Modal */}
       <GlobalSearch isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
+
+      {/* AI Chat Widget */}
+      {(!isHiddenPage && !isAudience) && <AIChatWidget />}
     </div>
   );
 }

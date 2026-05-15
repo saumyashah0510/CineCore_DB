@@ -22,6 +22,10 @@ class Settings(BaseSettings):
     DEMO_MODE: bool = True
     SUPERADMIN_KEY: str = "SUPERADMIN_SECRET"
 
+    # AI Assistant
+    GEMINI_API_KEY: str = ""
+    GROQ_API_KEY: str = ""
+
     # Computed properties — build URLs from the individual parts above
     @property
     def DATABASE_URL(self) -> str:

@@ -53,6 +53,8 @@ class ShootScheduleResponse(BaseModel):
     status: str
     director_notes: str | None
     delay_reason: str | None
+    location_name: str | None = None
+    city: str | None = None
     model_config = ConfigDict(from_attributes=True)
 
 

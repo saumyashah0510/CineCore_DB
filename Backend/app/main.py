@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 import os
 
 from fastapi import FastAPI, Request, Response
+# pyrefly: ignore [missing-import]
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.redis_client import init_redis, close_redis
@@ -18,7 +19,8 @@ from app.routers import (
     vendors,
     distribution,
     analytics,
-    production
+    production,
+    ai
 )
 
 
@@ -44,10 +46,12 @@ from app.config import settings
 @app.middleware("http")
 async def demo_mode_middleware(request: Request, call_next):
     if settings.DEMO_MODE and request.method in ["POST", "PUT", "DELETE", "PATCH"]:
-        superadmin_key = request.headers.get("X-Superadmin-Key", "")
-        if superadmin_key != settings.SUPERADMIN_KEY:
-            return Response(
-                content='{"detail": "Action disabled in demo mode. Database is read-only."}',
+        # Allow AI text-to-SQL endpoint (it is read-only and safely validated)
+        if not request.url.path.endswith("/ai/query"):
+            superadmin_key = request.headers.get("X-Superadmin-Key", "")
+            if superadmin_key != settings.SUPERADMIN_KEY:
+                return Response(
+                    content='{"detail": "Action disabled in demo mode. Database is read-only."}',
                 status_code=403,
                 media_type="application/json"
             )
@@ -74,6 +78,7 @@ app.include_router(vendors.router,       prefix=API_PREFIX)
 app.include_router(distribution.router,  prefix=API_PREFIX)
 app.include_router(analytics.router,     prefix=API_PREFIX)
 app.include_router(production.router,    prefix=API_PREFIX)
+app.include_router(ai.router,            prefix=API_PREFIX)
 
 
 @app.get("/")

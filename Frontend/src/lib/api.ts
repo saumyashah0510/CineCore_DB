@@ -22,6 +22,11 @@ api.interceptors.request.use((config) => {
   if (IS_DEMO_MODE && !bypassDemoMode) {
     const method = config.method?.toUpperCase();
     if (['POST', 'PUT', 'DELETE', 'PATCH'].includes(method || '')) {
+      // Allow AI queries through
+      if (config.url && config.url.includes('/ai/query')) {
+        return config;
+      }
+
       toast.success('Action simulated: Database is in Demo Mode', {
         icon: '🛡️',
         style: {
