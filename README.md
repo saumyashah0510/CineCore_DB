@@ -10,6 +10,7 @@
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-cinecore--db.vercel.app-gold?style=for-the-badge&logo=vercel&logoColor=black)](https://cinecore-db.vercel.app)
 [![API Docs](https://img.shields.io/badge/API%20Docs-Swagger%20UI-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://cinecore-backend.onrender.com/docs)
+[![View Demo](https://img.shields.io/badge/View%20Demo-LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/feed/update/urn:li:ugcPost:7460995035921170432/)
 
 <br />
 
