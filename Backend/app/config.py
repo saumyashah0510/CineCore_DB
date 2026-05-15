@@ -32,8 +32,10 @@ class Settings(BaseSettings):
 
     @property
     def REDIS_URL(self) -> str:
+        # Use rediss:// (SSL) when a password is set — required by Upstash
+        # Use redis:// (no SSL) for local development without a password
         if self.REDIS_PASSWORD:
-            return f"redis://:{self.REDIS_PASSWORD}@{self.REDIS_HOST}:{self.REDIS_PORT}/0"
+            return f"rediss://:{self.REDIS_PASSWORD}@{self.REDIS_HOST}:{self.REDIS_PORT}/0"
         return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}/0"
 
     # Tell pydantic-settings to read from .env file
