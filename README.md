@@ -129,6 +129,12 @@ CineCore DB is a full-stack, enterprise-level application designed to handle the
 - **Music Catalog** — Song-to-project attribution with licensing and royalty management
 - **Box Office Analytics** — Aggregate collection rankings across the entire studio portfolio
 
+### 🤖 AI Assistant (Text-to-SQL)
+- **Natural Language Queries** — Ask complex questions about budgets, schedules, and box office in plain English.
+- **Powered by Groq & Llama 3** — Blazing fast SQL generation and plain-English summarization.
+- **Conversational Memory** — Ask follow-up questions contextually without repeating previous details.
+- **Sandboxed Execution** — AI-generated SQL is rigorously validated to ensure it's strictly `SELECT`-only and contained within the `cinecore` schema.
+- **Graceful Error Handling** — Catches broken SQL seamlessly and returns conversational apologies instead of crash dumps.
 ---
 
 ## 👥 Role-Based Portals
@@ -229,6 +235,7 @@ vendor ──< expense
 | **Database ORM** | SQLAlchemy (asyncio), asyncpg | Async PostgreSQL queries |
 | **Database** | PostgreSQL 17 | Relational data store |
 | **Caching** | Redis (Upstash) | In-memory response cache |
+| **AI Processing** | Groq (Llama 3.3 & 3.1) | Text-to-SQL & Summarization |
 | **Validation** | Pydantic v2 | Schema validation & serialization |
 | **Frontend Host** | Vercel | CDN-backed static hosting |
 | **Backend Host** | Render | Containerized Python service |
@@ -310,6 +317,7 @@ REDIS_HOST=localhost
 REDIS_PORT=6379
 DEMO_MODE=True
 SUPERADMIN_KEY=[YOUR_SECRET_KEY]
+GROQ_API_KEY=[YOUR_GROQ_KEY]
 ```
 
 Start the server:
