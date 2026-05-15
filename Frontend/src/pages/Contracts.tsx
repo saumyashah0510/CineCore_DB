@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Plus, FileSignature, X, User } from 'lucide-react';
+import { Search, Plus, FileSignature, X, User, Download } from 'lucide-react';
 import { api } from '../lib/api';
 import { PageSkeleton } from '../components/CinematicEffects';
+import { exportToCSV } from '../lib/exportCSV';
 
 // ── API Fetchers ─────────────────────────────────────────────────────────────
 const fetchAllContracts = async () => {
@@ -105,7 +106,7 @@ export default function Contracts() {
           <h1 className="font-display text-4xl text-cine-ivory">Active Contracts</h1>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <div className="relative">
             <Search className="w-4 h-4 text-cine-dust absolute left-3 top-1/2 -translate-y-1/2" />
             <input 
@@ -116,6 +117,25 @@ export default function Contracts() {
               className="bg-cine-onyx border border-cine-border text-cine-ivory font-body text-sm pl-10 pr-4 py-2 focus:outline-none focus:border-cine-gold transition-colors w-64"
             />
           </div>
+          <button
+            onClick={() => {
+              const exportData = filteredContracts.map((c: any) => ({
+                ID: c.contract_id,
+                Talent: c.person_name,
+                Project: c.project_title,
+                Role: c.role,
+                Character: c.character_name || '',
+                'Fee (₹)': c.contract_fee,
+                Status: c.status,
+                'Signing Date': c.signing_date,
+                'Start Date': c.start_date,
+              }));
+              exportToCSV(exportData, 'contracts_report');
+            }}
+            className="flex items-center gap-2 border border-cine-border text-cine-dust px-4 py-2 font-caption text-xs uppercase hover:border-cine-gold/40 hover:text-cine-ivory transition-colors"
+          >
+            <Download className="w-3.5 h-3.5" /> Export CSV
+          </button>
           <button 
             onClick={() => setIsModalOpen(true)}
             className="flex items-center gap-2 bg-cine-gold text-cine-void px-5 py-2 font-caption text-xs font-bold tracking-widest uppercase hover:bg-cine-gold-light transition-colors"

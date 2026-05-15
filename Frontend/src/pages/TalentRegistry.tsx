@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Plus, UserCircle, Mail, Phone, X, Trash2 } from 'lucide-react';
+import { Search, Plus, UserCircle, Mail, Phone, X, Trash2, Download } from 'lucide-react';
 import { api } from '../lib/api';
 import { PageSkeleton } from '../components/CinematicEffects';
+import { exportToCSV } from '../lib/exportCSV';
 
 // ── API Fetchers ─────────────────────────────────────────────────────────────
 const fetchAllPersons = async () => {
@@ -110,7 +111,7 @@ export default function TalentRegistry() {
           <h1 className="font-display text-4xl text-cine-ivory">Global Talent Registry</h1>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <div className="relative">
             <Search className="w-4 h-4 text-cine-dust absolute left-3 top-1/2 -translate-y-1/2" />
             <input 
@@ -121,6 +122,26 @@ export default function TalentRegistry() {
               className="bg-cine-onyx border border-cine-border text-cine-ivory font-body text-sm pl-10 pr-4 py-2 focus:outline-none focus:border-cine-gold transition-colors w-64"
             />
           </div>
+          <button
+            onClick={() => {
+              const exportData = filteredPersons.map((p: any) => ({
+                ID: p.person_id,
+                'Full Name': p.full_name,
+                'Screen Name': p.screen_name || '',
+                Profession: p.primary_profession,
+                Nationality: p.nationality,
+                Gender: p.gender,
+                Email: p.contact_email,
+                Phone: p.contact_phone || '',
+                Agent: p.agent_name || '',
+                'Agent Contact': p.agent_contact || '',
+              }));
+              exportToCSV(exportData, 'talent_registry');
+            }}
+            className="flex items-center gap-2 border border-cine-border text-cine-dust px-4 py-2 font-caption text-xs uppercase hover:border-cine-gold/40 hover:text-cine-ivory transition-colors"
+          >
+            <Download className="w-3.5 h-3.5" /> Export CSV
+          </button>
           <button 
             onClick={() => setIsModalOpen(true)}
             className="flex items-center gap-2 bg-cine-gold text-cine-void px-5 py-2 font-caption text-xs font-bold tracking-widest uppercase hover:bg-cine-gold-light transition-colors"

@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { User, LogOut, Database, Lock, Unlock } from 'lucide-react';
+import { User, LogOut, Database, Lock, Unlock, Search } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { CustomCursor } from './CinematicEffects';
 import Footer from './Footer';
+import GlobalSearch from './GlobalSearch';
 
 // STRICT MAPPING BASED ON SCENARIOS DOC
 const NAV_LINKS = {
@@ -37,10 +38,20 @@ const NAV_LINKS = {
   ],
 };
 
+// Abbreviated role labels to keep navbar compact
+const ROLE_SHORT: Record<string, string> = {
+  ADMIN: 'ADMIN',
+  TALENT_MANAGER: 'TALENT',
+  FINANCE_MANAGER: 'FINANCE',
+  PRODUCTION_MANAGER: 'PROD',
+  DISTRIBUTION_MANAGER: 'DISTRIB',
+};
+
 export default function Layout({ children }: { children: ReactNode }) {
   const location = useLocation();
   const navigate = useNavigate();
   const { role, logout } = useAuth();
+  const [searchOpen, setSearchOpen] = useState(false);
 
   const isHiddenPage = location.pathname === '/' || location.pathname === '/login';
   const isAudience = role === 'AUDIENCE';
@@ -59,6 +70,18 @@ export default function Layout({ children }: { children: ReactNode }) {
       window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener('superadmin_changed', handleStorageChange);
     };
+  }, []);
+
+  // Global Cmd+K / Ctrl+K shortcut to open search
+  useEffect(() => {
+    const handleGlobalKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setSearchOpen(prev => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleGlobalKey);
+    return () => window.removeEventListener('keydown', handleGlobalKey);
   }, []);
 
   const handleSignOut = () => {
@@ -113,9 +136,9 @@ export default function Layout({ children }: { children: ReactNode }) {
                         <Link
                           key={item.label}
                           to={item.path}
-                          className="relative px-4 py-2 group"
+                          className="relative px-2 py-2 group"
                         >
-                          <span className={`font-body text-xs tracking-ultra uppercase transition-colors duration-300 ${isActive ? 'text-cine-gold' : 'text-cine-dust group-hover:text-cine-cream'
+                          <span className={`font-body text-xs tracking-ultra uppercase whitespace-nowrap transition-colors duration-300 ${isActive ? 'text-cine-gold' : 'text-cine-dust group-hover:text-cine-cream'
                             }`}>
                             {item.label}
                           </span>
@@ -157,38 +180,51 @@ export default function Layout({ children }: { children: ReactNode }) {
               </div>
 
               {/* Right side */}
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+
+                {/* Search Button — icon only to save navbar space */}
+                <button
+                  onClick={() => setSearchOpen(true)}
+                  className="flex items-center justify-center w-8 h-8 border border-cine-border text-cine-dust hover:border-cine-gold/40 hover:text-cine-ivory transition-colors"
+                  title="Search (Ctrl+K)"
+                >
+                  <Search className="w-3.5 h-3.5" />
+                </button>
 
                 {isSuperadmin ? (
-                  <button onClick={handleSuperadminLogout} className="hidden lg:flex items-center gap-2 px-3 py-1 border border-green-500/50 bg-green-500/10 hover:bg-green-500/20 transition-colors text-green-400" title="Click to lock database">
+                  <button onClick={handleSuperadminLogout}
+                    className="hidden lg:flex items-center justify-center w-7 h-7 border border-green-500/50 bg-green-500/10 hover:bg-green-500/20 transition-colors text-green-400"
+                    title="DB Unlocked — Click to lock"
+                  >
                     <Unlock className="w-3.5 h-3.5" />
-                    <span className="font-mono text-[9px] tracking-widest uppercase">DB Unlocked</span>
                   </button>
                 ) : (
-                  <div className="hidden lg:flex items-center gap-2 px-3 py-1 border border-cine-border bg-cine-void text-cine-dust" title="Database is read-only (Demo Mode)">
+                  <div
+                    className="hidden lg:flex items-center justify-center w-7 h-7 border border-cine-border bg-cine-void text-cine-dust"
+                    title="Database is read-only (Demo Mode)"
+                  >
                     <Lock className="w-3.5 h-3.5" />
-                    <span className="font-mono text-[9px] tracking-widest uppercase">DB Locked</span>
                   </div>
                 )}
 
                 {!isAudience && (
-                  <div className="hidden lg:flex items-center gap-2 px-3 py-1 border border-cine-border">
+                  <div className="hidden lg:flex items-center gap-1.5 px-2 py-1 border border-cine-border">
                     <div className="w-1.5 h-1.5 rounded-full bg-cine-gold" />
                     <span className="font-mono text-[9px] tracking-widest text-cine-gold/80 uppercase">
-                      {role.replace('_', ' ')}
+                      {ROLE_SHORT[role] || role}
                     </span>
                   </div>
                 )}
 
                 {isAudience ? (
-                  <Link to="/login" className="flex items-center gap-2 font-caption text-xs tracking-ultra uppercase text-cine-gold border border-cine-gold/40 px-4 py-1.5 hover:bg-cine-gold/10 transition-colors">
+                  <Link to="/login" className="flex items-center gap-2 font-caption text-xs tracking-ultra uppercase text-cine-gold border border-cine-gold/40 px-3 py-1.5 hover:bg-cine-gold/10 transition-colors">
                     <User className="w-3.5 h-3.5" />
-                    <span>Staff Login</span>
+                    <span>Login</span>
                   </Link>
                 ) : (
-                  <button onClick={handleSignOut} className="flex items-center gap-2 font-caption text-xs tracking-ultra uppercase text-red-500 border border-red-900/40 px-4 py-1.5 hover:bg-red-900/20 transition-colors">
+                  <button onClick={handleSignOut} className="flex items-center gap-1.5 font-caption text-xs tracking-ultra uppercase text-red-500 border border-red-900/40 px-3 py-1.5 hover:bg-red-900/20 transition-colors">
                     <LogOut className="w-3.5 h-3.5" />
-                    <span>Sign Out</span>
+                    <span className="hidden sm:inline">Sign Out</span>
                   </button>
                 )}
               </div>
@@ -202,6 +238,9 @@ export default function Layout({ children }: { children: ReactNode }) {
       </main>
 
       <Footer />
+
+      {/* Global Search Modal */}
+      <GlobalSearch isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
     </div>
   );
 }
