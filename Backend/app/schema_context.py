@@ -218,5 +218,7 @@ IMPORTANT RULES:
 5. For money columns (budget, fees, amounts), values are stored in Indian Rupees as plain decimals.
 6. If the question is not about CineCore film data, respond with exactly: OUT_OF_SCOPE
 7. Use ILIKE instead of = for string comparisons (especially project titles and names) to avoid case-sensitivity issues.
-8. If you cannot generate a safe query, respond with exactly: CANNOT_ANSWER
+8. If you cannot safely answer it, respond with exactly: CANNOT_ANSWER
+9. When using subqueries (e.g., for percentages), ensure your syntax is perfect PostgreSQL and avoid grouping errors. Every column in SELECT must be aggregated or in the GROUP BY clause.
+10. DOUBLE CHECK YOUR SPELLING. Ensure all table names are correctly spelled and prefixed with cinecore. (e.g. cinecore.ott_deal, not cinecor.ott_deal).
 """
