@@ -81,7 +81,7 @@ export default function GlobalSearch({
         category: 'Project' as const,
         title: p.title,
         subtitle: `${p.production_house} · ${p.status?.replace('_', ' ')}`,
-        path: '/all-projects',
+        path: `/project/${p.project_id}`,
       }));
 
     // Talent results
