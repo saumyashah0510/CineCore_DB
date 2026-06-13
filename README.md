@@ -282,6 +282,22 @@ await cache_delete_pattern("projects:*")  # Wipes all project keys
 # → Next read re-fetches fresh data from PostgreSQL
 ```
 
+### Load Test Performance Benchmarks
+
+To validate the caching layer under high-concurrency conditions, we performed a load test using Locust simulating **50 concurrent users** hitting the cached analytics endpoints:
+
+*   **Total Requests**: 2,813
+*   **Failed Requests**: 0 (0% failure rate)
+*   **Peak Throughput**: 134 RPS
+*   **Response Latency (p50)**: 27ms
+*   **Response Latency (p95)**: 46ms
+
+#### Locust Load Test Report
+![Locust Test Report](./docs/images/locust_stats.png)
+
+#### Performance Metrics & User Ramp-Up Charts
+![Locust Performance Charts](./docs/images/locust_charts.png)
+
 ---
 
 ## 🚀 Local Development
