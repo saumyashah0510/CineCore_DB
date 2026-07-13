@@ -5,6 +5,7 @@ import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
 import Layout from './components/Layout';
 import Landing from './pages/Landing';
+import WakeupLoader from './components/WakeupLoader';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Portfolio from './pages/Portfolio';
@@ -31,34 +32,36 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <Toaster position="top-right" />
-        <Router>
-          <Layout>
-            <AnimatePresence mode="wait">
-              <Routes>
-                <Route path="/" element={<Landing />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/portfolio" element={<Portfolio />} /> 
-                <Route path="/project/:id" element={<ProjectDetail />} />
-                <Route path="/all-projects" element={<AllProjects />} />
-                <Route path="/talent" element={<TalentRegistry />} />
-                <Route path="/contracts" element={<Contracts />} />
-                <Route path="/scripts" element={<Scripts />} />
-                <Route path="/ledger" element={<ExpenseLedger />} />
-                <Route path="/payments" element={<MilestoneRegistry />} />
-                {/* Production Manager Pages */}
-                <Route path="/locations" element={<Locations />} />
-                <Route path="/schedules" element={<Schedules />} />
-                <Route path="/permits" element={<Permits />} />
-                {/* Distribution Manager Pages */}
-                <Route path="/distribution" element={<Distribution />} />
-                <Route path="/music" element={<MusicCatalog />} />
-                {/* DBMS Documentation */}
-                <Route path="/dbms" element={<DBMSDocs />} />
-              </Routes>
-            </AnimatePresence>
-          </Layout>
-        </Router>
+        <WakeupLoader>
+          <Router>
+            <Layout>
+              <AnimatePresence mode="wait">
+                <Routes>
+                  <Route path="/" element={<Landing />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/portfolio" element={<Portfolio />} /> 
+                  <Route path="/project/:id" element={<ProjectDetail />} />
+                  <Route path="/all-projects" element={<AllProjects />} />
+                  <Route path="/talent" element={<TalentRegistry />} />
+                  <Route path="/contracts" element={<Contracts />} />
+                  <Route path="/scripts" element={<Scripts />} />
+                  <Route path="/ledger" element={<ExpenseLedger />} />
+                  <Route path="/payments" element={<MilestoneRegistry />} />
+                  {/* Production Manager Pages */}
+                  <Route path="/locations" element={<Locations />} />
+                  <Route path="/schedules" element={<Schedules />} />
+                  <Route path="/permits" element={<Permits />} />
+                  {/* Distribution Manager Pages */}
+                  <Route path="/distribution" element={<Distribution />} />
+                  <Route path="/music" element={<MusicCatalog />} />
+                  {/* DBMS Documentation */}
+                  <Route path="/dbms" element={<DBMSDocs />} />
+                </Routes>
+              </AnimatePresence>
+            </Layout>
+          </Router>
+        </WakeupLoader>
       </AuthProvider>
     </QueryClientProvider>
   );
