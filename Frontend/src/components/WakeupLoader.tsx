@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // Determine API URL identically to api.ts configuration
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
-const PING_URL = API_URL.replace('/api/v1', '') + '/health';
+const PING_URL = API_URL.replace('/api/v1', '') || '/';
 
 const CINEMA_TIPS = [
   "Threading the 35mm film reel into the gate...",
